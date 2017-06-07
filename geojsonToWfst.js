@@ -201,3 +201,5 @@ function generateSchemaLines(schemaLocations={}){
   }
   return schemaLines.join('\n');
 }
+
+module.exports = {Insert, Update, Replace, Delete, Transaction};
