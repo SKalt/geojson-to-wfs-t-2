@@ -1,0 +1,20 @@
+{
+  "name": "geojson-to-wfs-t-2",
+  "version": "1.0.0",
+  "description": "A library to convert geojson features to WFS-T-2.0 xml strings.",
+  "main": "geojsonToWfst.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "xml",
+    "wfs",
+    "wfs-t",
+    "transaction",
+    "geoserver",
+    "OGC",
+    "gis"
+  ],
+  "author": "Steven Kalt",
+  "license": " GPL-3.0"
+}
