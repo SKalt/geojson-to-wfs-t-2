@@ -7,7 +7,7 @@ const xml = {
   'tag': function(ns, tagName, attrs, inner){ // TODO: self-closing
     let tag = (ns ? `${ns}:` : '') + tagName;
     if (tagName){
-      return `<${tag}${this.attrs(attrs)}>${inner}</${tag}>`;	
+      return `<${tag}${this.attrs(attrs)}>${inner}</${tag}>`;   
     } else {
       throw new Error('no tag supplied ' + JSON.stringify(arguments));
     }
@@ -32,9 +32,9 @@ const unpack = (()=>{
     let results = {};
     for (let arg of args){
       if (!featureMembers.has(arg)){
-	results[arg] = feature[arg] || params[arg] || '';
+        results[arg] = feature[arg] || params[arg] || '';
       } else {
-	results[arg] = params[arg] || feature[arg]  || '';
+        results[arg] = params[arg] || feature[arg]  || '';
       }
       return results;
     }
@@ -119,7 +119,7 @@ function Update(features, params={}){
     // encapsulate each update in its own Update tag
     return features.map(
       (f) => Update(
-	f, Object.assign({}, params, {properties:f.properties})
+        f, Object.assign({}, params, {properties:f.properties})
       )
     ).join('');
   }
