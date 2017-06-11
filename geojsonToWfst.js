@@ -75,16 +75,17 @@ function translateFeatures(features, params){
   let {srsName} = params;
   for (let feature of features){
     //TODO: add whitelist support
-    let {ns, layer, geometry_name, properties, id} = unpack(
-      feature, params, 'ns', 'layer', 'geometry_name', 'properties', 'id'
+    let {ns, layer, geometry_name, properties, id, whitelist} = unpack(
+      feature, params, 'ns', 'layer', 'geometry_name', 'properties', 'id', 'whitelist'
     );
     let fields = '';
     if (geometry_name){
       fields += xml.tag(ns, geometry_name, {}, gml3(feature.geometry, '', {srsName}));
     }
-    for (let prop in properties){
-      fields += xml.tag(ns, prop, {}, properties[prop]);
-    }
+    useWhitelistIfAvailable(
+      whitelist, properties,
+      (prop, val)=>fields += xml.tag(ns, prop, {}, properties[prop])
+    );
     inner += xml.tag(ns, layer, {'gml:id': id}, fields);
   }
   return inner;
