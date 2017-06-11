@@ -2,7 +2,9 @@ const gml3 = require('geojson-to-gml-3').geomToGml;
 
 const xml = {
   'attrs': function(attrs){
-    return Object.keys(attrs).map((a)=>`${a}="${attrs[a]}"`).join(' ');
+    return Object.keys(attrs)
+      .map((a) => attrs[a] ? ` ${a}="${attrs[a]}"` : '')
+      .join('');
   },
   'tag': function(ns, tagName, attrs, inner){ // TODO: self-closing
     let tag = (ns ? `${ns}:` : '') + tagName;
@@ -16,28 +18,36 @@ const xml = {
 const wfs = (tagName, attrs, inner) => xml.tag('wfs', tagName, attrs, inner);
 const ensureArray = (...maybe)=>[].concat(...maybe);
 const ensureId = (lyr, id) => /\./.exec(id || '') ? id :`${lyr}.${id}`;
-const ensureTypeName = (ns, layer, typeName) => typeName || `${ns}:${layer}Type`;
+const ensureTypeName = (ns, layer, typeName) =>{
+  if (!typeName && !(ns && layer)){
+    throw new Error(`no typename possible: ${JSON.stringify({typeName, ns, layer})}`);
+  }
+  return typeName || `${ns}:${layer}Type`;
+};
 //const ensureObj = (maybe)=> maybe || {};
 const iterateKvp = (obj, cb) => Object.keys(obj).forEach((k)=>cb(k, obj[k]));
 const pass = () => '';
 const useWhitelistIfAvailable = (whitelist, properties, cb) =>{
-  for (let prop in whitelist || Object.keys(properties)){
+  for (let prop of whitelist || Object.keys(properties)){
     cb(prop, properties[prop]);
   }
 };
 const idFilter = (lyr, id) => `<fes:ResourceId rid="${ensureId(lyr, id)}"/>`;
 const unpack = (()=>{
-  let featureMembers = new Set(['properties', 'geometry', 'id']);
+  let featureMembers = new Set(['properties', 'geometry', 'id', 'layer']);
   return (feature, params, ...args) => {
     let results = {};
     for (let arg of args){
-      if (!featureMembers.has(arg)){
+      if (arg === 'layer'){
+	results[arg] = (params.layer || {}).id || params.layer
+	  || (feature.layer||{}).id || feature.layer || '';
+      } else if (!featureMembers.has(arg)){
         results[arg] = feature[arg] || params[arg] || '';
       } else {
         results[arg] = params[arg] || feature[arg]  || '';
       }
-      return results;
     }
+    return results;
   };
 })();
 const ensureFilter = (filter, features, params) => {
@@ -69,7 +79,7 @@ function translateFeatures(features, params){
     );
     let fields = '';
     if (geometry_name){
-      fields += xml.tag(ns, geometry_name, {}, gml3(feature.geometry, {srsName}));
+      fields += xml.tag(ns, geometry_name, {}, gml3(feature.geometry, '', {srsName}));
     }
     for (let prop in properties){
       fields += xml.tag(ns, prop, {}, properties[prop]);
@@ -126,8 +136,10 @@ function Update(features, params={}){
 }
 
 function Delete(features, params={}){
-  let {filter, typeName} = params;
-  typeName = ensureTypeName(typeName);
+  features = ensureArray(features);
+  let {filter, typeName} = params; //TODO: recure & encapsulate by typeName
+  let {ns, layer} = unpack(features[0] || {}, params, 'layer', 'ns');
+  typeName = ensureTypeName(ns, layer, typeName);
   filter = ensureFilter(filter, features, params);
   return wfs('Delete', {typeName}, filter); 
 }
@@ -146,12 +158,15 @@ function Transaction(verbs, params={}){
     nsAssignments, schemaLocations
   } = params;
   let converter = {Insert, Update, Delete};
-  let {insert:toInsert, update:toUpdate, delete:toDelete} = verbs;
+  let {insert:toInsert, update:toUpdate, delete:toDelete} = verbs || {};
   let actions = '';
   
   if (Array.isArray(verbs) && verbs.every((v) => typeof(v) == 'string')){
     actions += verbs.join('');
-  } else if ([toInsert, toUpdate, toDelete].some((e) => e)){
+  } else if (typeof(verbs) == 'string') {
+    actions = verbs;
+  }
+    else if ([toInsert, toUpdate, toDelete].some((e) => e)){
     actions += Insert(toInsert, params) +
       Update(toUpdate, params) +
       Delete(toDelete, params);
@@ -172,10 +187,12 @@ function generateNsAssignments(nsAssignments, xml){
   for (let ns in nsAssignments){
     makeNsAssignment(ns, nsAssignments[ns]);
   }
-  makeNsAssignment('wfs', 'http://www.opengis.net/wfs');
-  makeNsAssignment('ogc', 'http://www.opengis.net/ogc');
-  makeNsAssignment('gml', 'http://www.opengis.net/gml');
-  makeNsAssignment('xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+  let defaultNamespaces = {
+    'wfs': 'http://www.opengis.net/wfs/2.0',
+    'fes': 'http://www.opengis.net/fes/2.0',
+    'gml': 'http://www.opengis.net/gml/3.2',
+    'xsi': 'http://www.w3.org/2001/XMLSchema-instance'
+  };
   // check all ns's assigned 
   var re = /(<|typeName=")(\w+):/g;
   var arr;
@@ -183,6 +200,9 @@ function generateNsAssignments(nsAssignments, xml){
   while ((arr = re.exec(xml)) !== null){
     allNamespaces.add(arr[2]);
   }
+  ['wfs', 'xsi', 'gml', 'fes'].filter((e)=>allNamespaces.has(e)).forEach(
+    (usedNs) => makeNsAssignment(usedNs, defaultNamespaces[usedNs])
+  );
   for (let ns of allNamespaces){
     if (!attrs['xmlns:' + ns]){
       throw new Error(`unassigned namespace ${ns}`);
