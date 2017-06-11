@@ -16,7 +16,7 @@ const xml = {
   }
 };
 const wfs = (tagName, attrs, inner) => xml.tag('wfs', tagName, attrs, inner);
-const ensureArray = (...maybe)=>[].concat(...maybe);
+const ensureArray = (...maybe)=> maybe[0].features || [].concat(...maybe);
 const ensureId = (lyr, id) => /\./.exec(id || '') ? id :`${lyr}.${id}`;
 const ensureTypeName = (ns, layer, typeName) =>{
   if (!typeName && !(ns && layer)){
@@ -50,6 +50,7 @@ const unpack = (()=>{
     return results;
   };
 })();
+
 const ensureFilter = (filter, features, params) => {
   if (!filter){
     filter = '';
@@ -124,7 +125,7 @@ function Update(features, params={}){
     useWhitelistIfAvailable( // TODO: action attr
       whitelist, params.properties, (k, v) => fields += makeKvp(k,v)
     );
-    return wfs('Update', {inputFormat, srsName, typeName}, fields);
+    return wfs('Update', {inputFormat, srsName, typeName}, fields + filter);
   } else {
     // encapsulate each update in its own Update tag
     return features.map(
