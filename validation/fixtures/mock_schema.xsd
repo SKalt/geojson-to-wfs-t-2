@@ -1,0 +1,11 @@
+<xsd:schema
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:wfs="http://www.opengis.net/wfs/2.0"
+    xmlns:abc="http://www.example.com/abc"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified"
+    targetNamespace="http://www.example.com/abc">
+    <!--<xsd:import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/> -->
+  <xsd:import namespace="http://www.opengis.net/wfs/2.0" schemaLocation="http://schemas.opengis.net/wfs/2.0/wfs.xsd"/>
+  <xsd:import namespace="http://www.openplans.org/topp" schemaLocation="topp.xsd"/>
+</xsd:schema>
