@@ -80,13 +80,15 @@ function translateFeatures(features, params){
     );
     let fields = '';
     if (geometry_name){
-      fields += xml.tag(ns, geometry_name, {}, gml3(feature.geometry, '', {srsName}));
+      fields += xml.tag(
+	ns, geometry_name, {}, gml3(feature.geometry, '', {srsName})
+      );
     }
     useWhitelistIfAvailable(
       whitelist, properties,
       (prop, val)=>fields += xml.tag(ns, prop, {}, properties[prop])
     );
-    inner += xml.tag(ns, layer, {'gml:id': id}, fields);
+    inner += xml.tag(ns, layer, {'gml:id': ensureId(layer, id)}, fields);
   }
   return inner;
 }
@@ -114,8 +116,8 @@ function Update(features, params={}){
   );
   if (params.properties){
     let {handle, inputFormat, filter, typeName, whitelist} = params;
-    let { srsName, ns, layer } = unpack(
-      features[0] || {}, params, 'srsName', 'ns', 'layer');
+    let { srsName, ns, layer, geometry_name } = unpack(
+      features[0] || {}, params, 'srsName', 'ns', 'layer', 'geometry_name');
     typeName = ensureTypeName(ns, layer, typeName);
     filter = ensureFilter(filter, features, params);
     if (!filter && !features.length){
@@ -126,6 +128,11 @@ function Update(features, params={}){
     useWhitelistIfAvailable( // TODO: action attr
       whitelist, params.properties, (k, v) => fields += makeKvp(k,v)
     );
+    if (geometry_name){
+      fields +=  xml.tag(
+	ns, geometry_name, {}, gml3(params.geometry, '', {srsName})
+      );
+    }
     return wfs('Update', {inputFormat, srsName, typeName}, fields + filter);
   } else {
     // encapsulate each update in its own Update tag
@@ -146,10 +153,15 @@ function Delete(features, params={}){
   return wfs('Delete', {typeName}, filter); 
 }
 
-function Replace(features, params){
+function Replace(features, params={}){
   features = ensureArray(features);
-  let {filter, inputFormat, srsName} = params;
-  let replacements = translateFeatures(features, params);
+  let {filter, inputFormat, srsName} = unpack (
+    features[0] || {}, params || {}, 'filter', 'inputFormat', 'srsName'
+  );
+  let replacements = translateFeatures(
+    [features[0]].filter((f)=>f),
+    params || {}
+  );
   filter = ensureFilter(filter, features, params);
   return wfs('Replace', {inputFormat, srsName}, replacements + filter);
 }
@@ -157,7 +169,7 @@ function Replace(features, params){
 function Transaction(verbs, params={}){
   let {
     srsName, lockId, releaseAction, handle, inputFormat,
-    nsAssignments, schemaLocations
+    nsAssignments, schemaLocations, version
   } = params;
   let converter = {Insert, Update, Delete};
   let {insert:toInsert, update:toUpdate, delete:toDelete} = verbs || {};
@@ -179,7 +191,9 @@ function Transaction(verbs, params={}){
   nsAssignments = nsAssignments || {};
   schemaLocations = schemaLocations || {};
   let attrs = generateNsAssignments(nsAssignments, actions);
-  attrs['xsi:schemaLocation'] = generateSchemaLines(params.schemaLocations);
+  attrs['xsi:schemaLocation'] =  generateSchemaLines(params.schemaLocations);
+  attrs['service'] = 'WFS';
+  attrs['version'] = /2\.0\.\d+/.exec(version || '') ? version : '2.0.0';
   return wfs('Transaction', attrs, actions);
 }
 
@@ -189,12 +203,6 @@ function generateNsAssignments(nsAssignments, xml){
   for (let ns in nsAssignments){
     makeNsAssignment(ns, nsAssignments[ns]);
   }
-  let defaultNamespaces = {
-    'wfs': 'http://www.opengis.net/wfs/2.0',
-    'fes': 'http://www.opengis.net/fes/2.0',
-    'gml': 'http://www.opengis.net/gml/3.2',
-    'xsi': 'http://www.w3.org/2001/XMLSchema-instance'
-  };
   // check all ns's assigned 
   var re = /(<|typeName=")(\w+):/g;
   var arr;
@@ -202,9 +210,13 @@ function generateNsAssignments(nsAssignments, xml){
   while ((arr = re.exec(xml)) !== null){
     allNamespaces.add(arr[2]);
   }
-  ['wfs', 'xsi', 'gml', 'fes'].filter((e)=>allNamespaces.has(e)).forEach(
-    (usedNs) => makeNsAssignment(usedNs, defaultNamespaces[usedNs])
-  );
+  if (allNamespaces.has('fes')){
+    makeNsAssignment('fes', 'http://www.opengis.net/fes/2.0');
+  };
+  makeNsAssignment('xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+  makeNsAssignment('gml', 'http://www.opengis.net/gml/3.2');
+  makeNsAssignment('wfs', 'http://www.opengis.net/wfs/2.0');
+
   for (let ns of allNamespaces){
     if (!attrs['xmlns:' + ns]){
       throw new Error(`unassigned namespace ${ns}`);
