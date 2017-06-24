@@ -39,8 +39,7 @@
 <dd><p>Turns an array of geojson features into gml:_feature strings describing them.</p>
 </dd>
 <dt><a href="#Insert">Insert(features, params)</a> ⇒ <code>string</code></dt>
-<dd><p>Returns a wfs:Insert tag wrapping a translated feature
-(@see translateFeatures).</p>
+<dd><p>Returns a wfs:Insert tag wrapping a translated feature</p>
 </dd>
 <dt><a href="#Update">Update(features, params)</a> ⇒ <code>string</code></dt>
 <dd><p>Updates the input features in bulk with params.properties or by id.</p>
@@ -56,7 +55,7 @@ if none are supplied.</p>
 <dd><p>Wraps the input actions in a wfs:Transaction.</p>
 </dd>
 <dt><a href="#generateNsAssignments">generateNsAssignments(nsAssignments, xml)</a> ⇒ <code>Object</code></dt>
-<dd><p>Generates an object to be passed to @see xml.attr xmlns:ns=&quot;uri&quot; definitions for a wfs:Transaction</p>
+<dd><p>Generates an object to be passed to @see xml.attrs xmlns:ns=&quot;uri&quot; definitions for a wfs:Transaction</p>
 </dd>
 <dt><a href="#generateSchemaLines">generateSchemaLines(schemaLocations)</a> ⇒ <code>string</code></dt>
 <dd><p>Returns a string alternating uri, whitespace, and the uri&#39;s schema&#39;s location.</p>
@@ -70,13 +69,14 @@ if none are supplied.</p>
 <dd><p>An object containing optional named parameters.</p>
 </dd>
 <dt><a href="#Feature">Feature</a> : <code>Object</code></dt>
-<dd><p>A GeoJSON feature with the following optional foreign members (@see <a href="https://tools.ietf.org/html/rfc7946#section-6">https://tools.ietf.org/html/rfc7946#section-6</a>)
+<dd><p>A GeoJSON feature with the following optional foreign members (see 
+<a href="https://tools.ietf.org/html/rfc7946#section-6">rfc7965 § 6</a>).
 or an object with some of the following members.
 Members of Feature will be used over those in Params except for layer, id,
 and properties.</p>
 </dd>
 <dt><a href="#FeatureCollection">FeatureCollection</a> : <code>Object</code></dt>
-<dd><p>a GeoJSON FeatureCollection with optional foreign members as in @see Feature.</p>
+<dd><p>a GeoJSON FeatureCollection with optional foreign members as in Feature.</p>
 </dd>
 </dl>
 
@@ -86,34 +86,34 @@ and properties.</p>
 **Kind**: global constant  
 
 * [xml](#xml) : <code>Object</code>
-    * [~attrs(attrs)](#xml..attrs) ⇒ <code>string</code>
-    * [~tag(ns, tagName, attrs, inner)](#xml..tag) ⇒ <code>string</code>
+    * [.attrs(attrs)](#xml.attrs) ⇒ <code>string</code>
+    * [.tag(ns, tagName, attrs, inner)](#xml.tag) ⇒ <code>string</code>
 
-<a name="xml..attrs"></a>
+<a name="xml.attrs"></a>
 
-### xml~attrs(attrs) ⇒ <code>string</code>
+### xml.attrs(attrs) ⇒ <code>string</code>
 Turns an object into a string of xml attribute key-value pairs.
 
-**Kind**: inner method of [<code>xml</code>](#xml)  
+**Kind**: static method of [<code>xml</code>](#xml)  
 **Returns**: <code>string</code> - a string of xml attribute key-value pairs  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | attrs | <code>Object</code> | an object mapping attribute names to attribute values |
 
-<a name="xml..tag"></a>
+<a name="xml.tag"></a>
 
-### xml~tag(ns, tagName, attrs, inner) ⇒ <code>string</code>
+### xml.tag(ns, tagName, attrs, inner) ⇒ <code>string</code>
 Creates a string xml tag.
 
-**Kind**: inner method of [<code>xml</code>](#xml)  
+**Kind**: static method of [<code>xml</code>](#xml)  
 **Returns**: <code>string</code> - an xml string.  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | ns | <code>string</code> | the tag's xml namespace abbreviation. |
 | tagName | <code>string</code> | the tag name. |
-| attrs | <code>Object</code> | @see xml attrs. |
+| attrs | <code>Object</code> | @see xml.attrs. |
 | inner | <code>string</code> | inner xml. |
 
 <a name="wfs"></a>
@@ -126,8 +126,8 @@ Shorthand for creating a wfs xml tag.
 | Param | Type | Description |
 | --- | --- | --- |
 | tagName | <code>string</code> | a valid wfs tag name. |
-| attrs | <code>Object</code> | @see attrs. |
-| inner | <code>string</code> | @see tag. |
+| attrs | <code>Object</code> | @see xml.attrs. |
+| inner | <code>string</code> | @see xml.tag. |
 
 <a name="ensureArray"></a>
 
@@ -245,15 +245,13 @@ Turns an array of geojson features into gml:_feature strings describing them.
 
 ## Insert(features, params) ⇒ <code>string</code>
 Returns a wfs:Insert tag wrapping a translated feature
-(@see translateFeatures).
 
 **Kind**: global function  
 **Returns**: <code>string</code> - a wfs:Insert string.  
-**See**: translateFeatures  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| features | [<code>Array.&lt;Feature&gt;</code>](#Feature) \| [<code>FeatureCollection</code>](#FeatureCollection) \| [<code>Feature</code>](#Feature) | Feature(s) to pass to |
+| features | [<code>Array.&lt;Feature&gt;</code>](#Feature) \| [<code>FeatureCollection</code>](#FeatureCollection) \| [<code>Feature</code>](#Feature) | Feature(s) to pass to @see translateFeatures |
 | params | [<code>Params</code>](#Params) | to be passed to @see translateFeatures, with optional inputFormat, srsName, handle for the wfs:Insert tag. |
 
 <a name="Update"></a>
@@ -280,7 +278,7 @@ makes a wfs:Property string containg a wfs:ValueReference, wfs:Value pair.
 | --- | --- | --- |
 | prop | <code>string</code> | the field/property name |
 | val | <code>string</code> | the field/property value |
-| action | <code>string</code> | one of 'insertBefore', 'insertAfter', 'remove', 'replace'. See http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#286. `action` would delete or modify the order of fields within the remote feature. There is currently no way to input `action,` since wfs:Update's default action, 'replace', is sufficient. |
+| action | <code>string</code> | one of 'insertBefore', 'insertAfter', 'remove', 'replace'. See [OGC 09-025r2 § 15.2.5.2.1](http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#286). `action` would delete or modify the order of fields within the remote feature. There is currently no way to input `action,` since wfs:Update's default action, 'replace', is sufficient. |
 
 <a name="Delete"></a>
 
@@ -335,7 +333,7 @@ to the eponymous function.
 <a name="generateNsAssignments"></a>
 
 ## generateNsAssignments(nsAssignments, xml) ⇒ <code>Object</code>
-Generates an object to be passed to @see xml.attr xmlns:ns="uri" definitions for a wfs:Transaction
+Generates an object to be passed to @see xml.attrs xmlns:ns="uri" definitions for a wfs:Transaction
 
 **Kind**: global function  
 **Returns**: <code>Object</code> - an object mapping each ns to its URI as 'xmlns:ns' : 'URI'.  
@@ -376,19 +374,20 @@ An object containing optional named parameters.
 | geometry_name | <code>string</code> \| <code>undefined</code> | the name of the feature geometry field. |
 | properties | <code>Object</code> \| <code>undefined</code> | an object mapping feature field names to feature properties |
 | id | <code>string</code> \| <code>undefined</code> | a string feature id. |
-| whitelist | <code>Array.&lt;string&gt;</code> \| <code>undefined</code> | an array of string field names to  use from @see params.properties |
-| inputFormat | <code>string</code> \| <code>undefined</code> | inputFormat, as specified at http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#65. |
-| srsName | <code>string</code> \| <code>undefined</code> | srsName, as specified at http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#66 if undefined, the gml3 module will default to 'EPSG:4326'. |
-| handle | <code>string</code> \| <code>undefined</code> | handle parameter, as specified at http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#44 |
+| whitelist | <code>Array.&lt;string&gt;</code> \| <code>undefined</code> | an array of string field names to  use from @see Params.properties |
+| inputFormat | <code>string</code> \| <code>undefined</code> | inputFormat, as specified at  [OGC 09-025r2 § 7.6.5.4](http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#65). |
+| srsName | <code>string</code> \| <code>undefined</code> | srsName, as specified at  [OGC 09-025r2 § 7.6.5.5](http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#66). if undefined, the gml3 module will default to 'EPSG:4326'. |
+| handle | <code>string</code> \| <code>undefined</code> | handle parameter, as specified at [OGC 09-025r2 § 7.6.2.6 ](http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#44) |
 | filter | <code>string</code> \| <code>undefined</code> | a string fes:Filter. |
-| typeName | <code>string</code> \| <code>undefined</code> | a string specifying the feature type within its namespace. @see http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#90. |
+| typeName | <code>string</code> \| <code>undefined</code> | a string specifying the feature type within its namespace. See [09-025r2 § 7.9.2.4.1](http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#90). |
 | schemaLocations | <code>Object</code> \| <code>undefined</code> | an object mapping uri to schemalocation |
 | nsAssignments | <code>Object</code> \| <code>undefined</code> | an object mapping ns to uri |
 
 <a name="Feature"></a>
 
 ## Feature : <code>Object</code>
-A GeoJSON feature with the following optional foreign members (@see https://tools.ietf.org/html/rfc7946#section-6)
+A GeoJSON feature with the following optional foreign members (see 
+[rfc7965 § 6](https://tools.ietf.org/html/rfc7946#section-6)).
 or an object with some of the following members.
 Members of Feature will be used over those in Params except for layer, id,
 and properties.
@@ -405,12 +404,12 @@ and properties.
 **Example**  
 ```js
 {'id':'tasmania_roads.1', 'typeName':'topp:tasmania_roadsType'} 
-// can be passed to @see Delete
+// can be passed to Delete
 ```
 <a name="FeatureCollection"></a>
 
 ## FeatureCollection : <code>Object</code>
-a GeoJSON FeatureCollection with optional foreign members as in @see Feature.
+a GeoJSON FeatureCollection with optional foreign members as in Feature.
 
 **Kind**: global typedef  
 **Extends**: [<code>Feature</code>](#Feature)  

@@ -6,7 +6,7 @@ const gml3 = require('geojson-to-gml-3').geomToGml;
 const xml = {
   /**
    * Turns an object into a string of xml attribute key-value pairs.
-   * @memberOf xml~
+   * @memberOf xml.
    * @function
    * @param {Object} attrs an object mapping attribute names to attribute values
    * @returns {string} a string of xml attribute key-value pairs
@@ -19,10 +19,10 @@ const xml = {
   /**
    * Creates a string xml tag.
    * @function 
-   * @memberOf xml~
+   * @memberOf xml.
    * @param {string} ns the tag's xml namespace abbreviation.
    * @param {string} tagName the tag name.
-   * @param {Object} attrs @see xml attrs.
+   * @param {Object} attrs @see xml.attrs.
    * @param {string} inner inner xml.
    * @returns {string} an xml string.
    */
@@ -38,8 +38,8 @@ const xml = {
 /**
  * Shorthand for creating a wfs xml tag.
  * @param {string} tagName a valid wfs tag name.
- * @param {Object} attrs @see attrs.
- * @param {string} inner @see tag.
+ * @param {Object} attrs @see xml.attrs.
+ * @param {string} inner @see xml.tag.
  */
 const wfs = (tagName, attrs, inner) => xml.tag('wfs', tagName, attrs, inner);
 /**
@@ -122,6 +122,7 @@ const unpack = (()=>{
 
 /**
  * Builds a filter from feature ids if one is not already input.
+ * @function 
  * @param {string|undefined} filter a possible string filter
  * @param {Array<Object>} features an array of geojson feature objects
  * @param {Object} params an object of backup / override parameters
@@ -161,20 +162,24 @@ const ensureAction = (()=>{
  * @prop {Object|undefined} properties an object mapping feature field names to feature properties
  * @prop {string|undefined} id a string feature id.
  * @prop {string[]|undefined} whitelist an array of string field names to 
- * use from @see params.properties
- * @prop {string|undefined} inputFormat inputFormat, as specified at http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#65.
- * @prop {string|undefined} srsName srsName, as specified at http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#66
+ * use from @see Params.properties
+ * @prop {string|undefined} inputFormat inputFormat, as specified at 
+ * [OGC 09-025r2 § 7.6.5.4]{@link http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#65}.
+ * @prop {string|undefined} srsName srsName, as specified at 
+ * [OGC 09-025r2 § 7.6.5.5]{@link http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#66}.
  * if undefined, the gml3 module will default to 'EPSG:4326'.
- * @prop {string|undefined} handle handle parameter, as specified at http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#44
+ * @prop {string|undefined} handle handle parameter, as specified at
+ * [OGC 09-025r2 § 7.6.2.6 ]{@link http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#44}
  * @prop {string|undefined} filter a string fes:Filter.
  * @prop {string|undefined} typeName a string specifying the feature type within
- * its namespace. @see http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#90.
+ * its namespace. See [09-025r2 § 7.9.2.4.1]{@link http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#90}.
  * @prop {Object|undefined} schemaLocations an object mapping uri to schemalocation
  * @prop {Object|undefined} nsAssignments an object mapping ns to uri
  */
 
 /**
- * A GeoJSON feature with the following optional foreign members (@see https://tools.ietf.org/html/rfc7946#section-6)
+ * A GeoJSON feature with the following optional foreign members (see 
+ * [rfc7965 § 6]{@link https://tools.ietf.org/html/rfc7946#section-6}).
  * or an object with some of the following members.
  * Members of Feature will be used over those in Params except for layer, id,
  * and properties.
@@ -184,11 +189,11 @@ const ensureAction = (()=>{
  * @property {string|undefined} type 'Feature'.
  * @example 
  * {'id':'tasmania_roads.1', 'typeName':'topp:tasmania_roadsType'} 
- * // can be passed to @see Delete
+ * // can be passed to Delete
  */
 
 /**
- * a GeoJSON FeatureCollection with optional foreign members as in @see Feature.
+ * a GeoJSON FeatureCollection with optional foreign members as in Feature.
  * @typedef {Object} FeatureCollection
  * @extends Feature
  * @property {string} type 'FeatureCollection'.
@@ -197,6 +202,7 @@ const ensureAction = (()=>{
 
 /**
  * Turns an array of geojson features into gml:_feature strings describing them.
+ * @function 
  * @param {Feature[]} features an array of features to translate to 
  * gml:_features.
  * @param {Params} params an object of backup / override parameters 
@@ -227,10 +233,8 @@ function translateFeatures(features, params={}){
 
 /**
  * Returns a wfs:Insert tag wrapping a translated feature
- * (@see translateFeatures).
  * @function 
- * @param {Feature[]|FeatureCollection|Feature} features Feature(s) to pass to 
- * @see translateFeatures
+ * @param {Feature[]|FeatureCollection|Feature} features Feature(s) to pass to @see translateFeatures
  * @param {Params} params to be passed to @see translateFeatures, with optional
  * inputFormat, srsName, handle for the wfs:Insert tag.
  * @returns {string} a wfs:Insert string.
@@ -260,10 +264,11 @@ function Update(features, params={}){
   /**
    * makes a wfs:Property string containg a wfs:ValueReference, wfs:Value pair.
    * @function 
+   * @memberof Update~
    * @param {string} prop the field/property name
    * @param {string} val the field/property value 
    * @param {string} action one of 'insertBefore', 'insertAfter', 'remove',
-   * 'replace'. See http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#286.
+   * 'replace'. See [OGC 09-025r2 § 15.2.5.2.1]{@link http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#286}.
    * `action` would delete or modify the order of fields within the remote
    * feature. There is currently no way to input `action,` since wfs:Update's
    * default action, 'replace', is sufficient.
@@ -346,7 +351,7 @@ function Replace(features, params={}){
 
 /**
  * Wraps the input actions in a wfs:Transaction.
- * @param {Object|Array<string>|string} actions an object mapping {Insert, Update,
+ * @param {Object|string[]|string} actions an object mapping {Insert, Update,
  * Delete} to feature(s) to pass to Insert, Update, Delete, or wfs:action 
  * string(s) to wrap in a transaction.
  * @param {Object} params optional srsName, lockId, releaseAction, handle,
@@ -388,7 +393,7 @@ function Transaction(actions, params={}){
 }
 
 /**
- * Generates an object to be passed to @see xml.attr xmlns:ns="uri" definitions for a wfs:Transaction
+ * Generates an object to be passed to @see xml.attrs xmlns:ns="uri" definitions for a wfs:Transaction
  * @param {Object} nsAssignments @see Params.nsAssignments
  * @param {string} xml arbitrary xml.
  * @returns {Object} an object mapping each ns to its URI as 'xmlns:ns' : 'URI'.
