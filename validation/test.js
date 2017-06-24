@@ -23,7 +23,7 @@ const tempId = (()=>{
   };
 })();
 
-function test(testCaseId, action, note){ // TODO: anti-tests.
+let test = (testCaseId, action, note) =>{ // TODO: anti-tests.
   it(`${testCaseId} : ${action}; ${note || ''}`,
      function(){
        const [feature, params] = testCases[testCaseId];
@@ -40,7 +40,7 @@ function test(testCaseId, action, note){ // TODO: anti-tests.
        return isValidWfst(xml);
      }
     );
-}
+};
 const tests = (testCaseId, ...actions) => actions.forEach(
   (action) => test(testCaseId, action)
 );
@@ -54,7 +54,7 @@ const tests = (testCaseId, ...actions) => actions.forEach(
 //   'featureCollection',
 //   'whitelist' ]
 
-describe('WFS-T-2.0.0', function(){
+describe('Generation of valid WFS-T-2.0.0', function(){
   // it('exists / is visible', function(){
   //   console.log(formatXml(wfs.Insert(feature)), '\n-------------------');
   //   console.log(formatXml(wfs.Update(feature)), '\n-------------------');
@@ -83,6 +83,26 @@ describe('WFS-T-2.0.0', function(){
   tests('featureCollection',
 	'Insert', 'Replace','Update', 'Delete');
   tests('whitelist',
-	'Insert', 'Update', 'Replace'); //Update?
-  //TODO: literally all the UPDATEs
+	'Insert', 'Update', 'Replace'); 
 });
+test = (testCaseId, action, note) => { // TODO: anti-tests.
+  it(`${testCaseId} : ${action}; ${note || ''}`,
+     function(){
+       const [feature, params] = testCases[testCaseId];
+       let xml = wfs.Transaction(
+	 wfs[action](feature, params),
+	 {
+	   nsAssignments:{
+    	     topp:'http://www.openplans.org/topp'
+	   },
+	   schemaLocations:{}
+	 }
+       );
+       xml = xml.replace(/<gml:(MultiCurve|LineString)/g, (match)=>`${match + tempId()}`);
+       return isValidWfst(xml)
+	 .catch(()=>true)
+	 .then(()=>{throw new Error('should have thrown an error');});
+     }
+    );
+};
+describe('Appropriate throwing of errors', function(){});
