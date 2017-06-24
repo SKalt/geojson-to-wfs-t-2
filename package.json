@@ -18,7 +18,14 @@
   ],
   "author": "Steven Kalt",
   "license": " GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SKalt/geojson-to-wfs-t-2.git"
+  },
   "devDependencies": {
     "jsdoc-to-markdown": "^3.0.0"
+  },
+  "dependencies": {
+    "geojson-to-gml-3": "^1.1.2"
   }
 }
