@@ -4,7 +4,8 @@
   "description": "A library to convert geojson features to WFS-T-2.0 xml strings.",
   "main": "geojsonToWfst.js",
   "scripts": {
-    "test": "mocha"
+    "test": "cd validation; mocha --timeout 60000",
+    "make-docs": "node make-docs.js"
   },
   "keywords": [
     "xml",
@@ -16,5 +17,8 @@
     "gis"
   ],
   "author": "Steven Kalt",
-  "license": " GPL-3.0"
+  "license": " GPL-3.0",
+  "devDependencies": {
+    "jsdoc-to-markdown": "^3.0.0"
+  }
 }
