@@ -128,7 +128,7 @@ const unpack = (()=>{
  * @param {Object} params an object of backup / override parameters
  * @returns {string} A filter, or the input filter if it was a string.
  */
-const ensureFilter = (filter, features, params) => {
+function ensureFilter(filter, features, params){
   if (!filter){
     filter = '';
     for (let feature of features){
