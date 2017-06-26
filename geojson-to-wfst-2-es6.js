@@ -1,6 +1,4 @@
-const gml3 = require('geojson-to-gml-3').geomToGml;
-
-
+import {geomToGml as gml3} from 'geojson-to-gml-3';
 
 /** @const {Object} xml */
 const xml = {
@@ -443,4 +441,4 @@ function generateSchemaLines(schemaLocations={}){
   return schemaLines.join('\n');
 }
 
-module.exports = {Insert, Update, Replace, Delete, Transaction};
+export {Insert, Update, Replace, Delete, Transaction};
