@@ -477,7 +477,7 @@ function Update(features, params = {}) {
    * feature. There is currently no way to input `action,` since wfs:Update's
    * default action, 'replace', is sufficient.
    */
-  const makeKvp = (prop, val, action) => wfs('Property', {}, wfs('ValueReference', { action }, prop) + (val == undefined ? wfs('Value', {}, val) : ''));
+  const makeKvp = (prop, val, action) => wfs('Property', {}, wfs('ValueReference', { action }, prop) + (val !== undefined ? wfs('Value', {}, val) : ''));
   if (params.properties) {
     let { handle, inputFormat, filter, typeName, whitelist } = params;
     let { srsName, ns, layer, geometry_name } = unpack(features[0] || {}, params, 'srsName', 'ns', 'layer', 'geometry_name');

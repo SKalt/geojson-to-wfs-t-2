@@ -274,7 +274,7 @@ function Update(features, params={}){
   const makeKvp = (prop, val, action) => wfs(
     'Property', {},
     wfs('ValueReference', {action}, prop) +
-      (val == undefined ? wfs('Value', {}, val): '')
+      (val !== undefined ? wfs('Value', {}, val): '')
   );
   if (params.properties){
     let {handle, inputFormat, filter, typeName, whitelist} = params;
