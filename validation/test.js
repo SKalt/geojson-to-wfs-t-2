@@ -69,22 +69,22 @@ describe('Generation of valid WFS-T-2.0.0', function(){
   // });
   //for (let testCase in testCases){
   let testCase = "complete feature, empty params";
-  // tests('complete feature, empty params',
-	// 'Insert', 'Replace', 'Delete');
-  // tests('complete feature, undefined params',
-	// 'Insert', 'Replace', 'Update', 'Delete');
-  // tests('separated layer, id number',
-	// 'Insert', 'Replace','Update', 'Delete');
-  // tests('layer override',
-  //      	'Insert', 'Replace','Update', 'Delete');
-  // tests('parameter override',
-	// 'Insert', 'Replace','Update', 'Delete');
-  // tests('feature array',
- 	// 'Insert', 'Replace','Update', 'Delete');
-  // tests('featureCollection',
-	// 'Insert', 'Replace','Update', 'Delete');
-  // tests('whitelist',
-	// 'Insert', 'Update', 'Replace');
+  tests('complete feature, empty params',
+	'Insert', 'Replace', 'Delete');
+  tests('complete feature, undefined params',
+	'Insert', 'Replace', 'Update', 'Delete');
+  tests('separated layer, id number',
+	'Insert', 'Replace','Update', 'Delete');
+  tests('layer override',
+       	'Insert', 'Replace','Update', 'Delete');
+  tests('parameter override',
+	'Insert', 'Replace','Update', 'Delete');
+  tests('feature array',
+ 	'Insert', 'Replace','Update', 'Delete');
+  tests('featureCollection',
+	'Insert', 'Replace','Update', 'Delete');
+  tests('whitelist',
+	'Insert', 'Update', 'Replace');
   tests('update error feature',
 	'Insert', 'Update', 'Replace', 'Delete');
 });
