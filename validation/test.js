@@ -1,6 +1,7 @@
 const validate = require('xsd-schema-validator').validateXML;
 const formatXml = require('./formatXml.js');
-const wfs = require('../geojsonToWfst.js');
+// const wfs = require('../geojsonToWfst.js');
+const wfs = require('../geojson-to-wfst-2-cjs');
 const {testCases, feature} = require('./featureExamples.js'); // in separate
 // module since the fixtures are many lines of code.
 
@@ -68,22 +69,24 @@ describe('Generation of valid WFS-T-2.0.0', function(){
   // });
   //for (let testCase in testCases){
   let testCase = "complete feature, empty params";
-  tests('complete feature, empty params',
-	'Insert', 'Replace', 'Delete');
-  tests('complete feature, undefined params',
-	'Insert', 'Replace', 'Update', 'Delete');
-  tests('separated layer, id number',
-	'Insert', 'Replace','Update', 'Delete');
-  tests('layer override',
-       	'Insert', 'Replace','Update', 'Delete');
-  tests('parameter override',
-	'Insert', 'Replace','Update', 'Delete');
-  tests('feature array',
- 	'Insert', 'Replace','Update', 'Delete');
-  tests('featureCollection',
-	'Insert', 'Replace','Update', 'Delete');
-  tests('whitelist',
-	'Insert', 'Update', 'Replace'); 
+  // tests('complete feature, empty params',
+	// 'Insert', 'Replace', 'Delete');
+  // tests('complete feature, undefined params',
+	// 'Insert', 'Replace', 'Update', 'Delete');
+  // tests('separated layer, id number',
+	// 'Insert', 'Replace','Update', 'Delete');
+  // tests('layer override',
+  //      	'Insert', 'Replace','Update', 'Delete');
+  // tests('parameter override',
+	// 'Insert', 'Replace','Update', 'Delete');
+  // tests('feature array',
+ 	// 'Insert', 'Replace','Update', 'Delete');
+  // tests('featureCollection',
+	// 'Insert', 'Replace','Update', 'Delete');
+  // tests('whitelist',
+	// 'Insert', 'Update', 'Replace');
+  tests('update error feature',
+	'Insert', 'Update', 'Replace', 'Delete');
 });
 test = (testCaseId, action, note) => { // TODO: anti-tests.
   it(`${testCaseId} : ${action}; ${note || ''}`,
