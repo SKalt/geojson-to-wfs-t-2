@@ -1,6 +1,7 @@
 const validate = require('xsd-schema-validator').validateXML;
 const formatXml = require('./formatXml.js');
-const wfs = require('../geojsonToWfst.js');
+// const wfs = require('../geojsonToWfst.js');
+const wfs = require('../geojson-to-wfst-2-cjs');
 const {testCases, feature} = require('./featureExamples.js'); // in separate
 // module since the fixtures are many lines of code.
 
@@ -83,7 +84,9 @@ describe('Generation of valid WFS-T-2.0.0', function(){
   tests('featureCollection',
 	'Insert', 'Replace','Update', 'Delete');
   tests('whitelist',
-	'Insert', 'Update', 'Replace'); 
+	'Insert', 'Update', 'Replace');
+  tests('update error feature',
+	'Insert', 'Update', 'Replace', 'Delete');
 });
 test = (testCaseId, action, note) => { // TODO: anti-tests.
   it(`${testCaseId} : ${action}; ${note || ''}`,

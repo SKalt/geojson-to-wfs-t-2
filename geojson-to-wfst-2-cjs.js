@@ -491,7 +491,7 @@ function Update(features, params = {}) {
     useWhitelistIfAvailable( // TODO: action attr
     whitelist, params.properties, (k, v) => fields += makeKvp(k, v));
     if (geometry_name) {
-      fields += xml.tag(ns, geometry_name, {}, geomToGml(params.geometry, '', { srsName }));
+      fields += makeKvp(geometry_name, xml.tag(ns, geometry_name, {}, geomToGml(params.geometry, '', { srsName })));
     }
     return wfs('Update', { inputFormat, srsName, typeName }, fields + filter);
   } else {

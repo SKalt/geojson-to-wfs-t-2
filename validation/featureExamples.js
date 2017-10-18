@@ -34,6 +34,28 @@ const basicGeojson = { // complete feature
   "srsName":"EPSG:4326"
 };
 
+const updateErrorGeojson = {
+    "type": "Feature",
+    "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+            [
+                [3550776.6, 5810513.2],
+                [3550771, 5810342.4],
+                [3551053.8, 5810325.6],
+                [3551079, 5810499.2],
+                [3550776.6, 5810513.2]
+            ]
+        ]
+    },
+    "crs": {
+        "type": "name",
+        "properties": {
+            "name": "EPSG:31467"
+        }
+    }
+};
+
 const makeFeature = (overrides, ...deletions) =>{
   let newFeature = Object.assign({}, basicGeojson, overrides);
   
@@ -76,7 +98,11 @@ const should_work_inputs = { //feature/s, params pairs
     {
       "whitelist":["TYPE"]
     }
-  ]
+  ],
+  "update error feature": [
+    makeFeature(updateErrorGeojson, 'geometry_name'), {
+    "srsName": "http://www.opengis.net/def/crs/EPSG/0/31467"
+  }]
 };
 
 module.exports = {testCases:should_work_inputs, feature:basicGeojson};

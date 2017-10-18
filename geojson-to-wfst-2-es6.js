@@ -291,8 +291,10 @@ function Update(features, params={}){
       whitelist, params.properties, (k, v) => fields += makeKvp(k,v)
     );
     if (geometry_name){
-      fields +=  xml.tag(
-	ns, geometry_name, {}, gml3(params.geometry, '', {srsName})
+      fields +=  makeKvp(
+          geometry_name, xml.tag(
+              ns, geometry_name, {}, gml3(params.geometry, '', {srsName})
+          )
       );
     }
     return wfs('Update', {inputFormat, srsName, typeName}, fields + filter);
