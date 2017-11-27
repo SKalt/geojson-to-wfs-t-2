@@ -2,8 +2,8 @@
   "name": "geojson-to-wfs-t-2",
   "version": "1.1.2",
   "description": "A library to convert geojson features to WFS-T-2.0 xml strings.",
-  "main": "geojson-to-wfst-cjs.js",
-  "module": "geojson-to-wfst-es6.js",
+  "main": "geojson-to-wfst-2-cjs.js",
+  "module": "geojson-to-wfst-2-es6.js",
   "scripts": {
     "test": "cd validation; mocha --timeout 60000",
     "make-docs": "node make-docs.js"
@@ -40,6 +40,8 @@
     "xsd-schema-validator": "^0.5.0"
   },
   "dependencies": {
-    "geojson-to-gml-3": "^1.1.2"
+    "geojson-to-gml-3": "^1.1.2",
+    "handlebars": "^4.0.11",
+    "uglify-js": "^3.1.10"
   }
 }
