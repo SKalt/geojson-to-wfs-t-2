@@ -2,10 +2,31 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
+/* eslint-disable no-console */
 /* 
  Note this can only convert what geojson can store: simple feature types, not
  coverage, topology, etc.
  */
+
+/** 
+ * geojson coordinates are in longitude/easting, latitude/northing [,elevation]
+ * order by [RFC-7946 § 3.1.1]{@link https://tools.ietf.org/html/rfc7946#section-3.1.1}.
+ * however, you may use a CRS that follows a latitude/easting,
+ * longitude/northing, [,elevation] order.
+ */
+var coordinateOrder = true;
+function orderCoords(coords){
+  if (coordinateOrder){
+    return coords;
+  } 
+  if (coords[2]){
+    return [coords[1], coords[0], coords[2]];
+  } 
+  return coords.reverse();
+}
+
+
+
 /** @private*/
 function attrs(attrMappings){
   let results = '';
@@ -44,8 +65,8 @@ function multi(name, memberName, membercb, geom, gmlId, params={}){
   enforceGmlId(gmlId);
   var {srsName, gmlIds} = params;
   let multi = `<gml:${name}${attrs({srsName, 'gml:id':gmlId})}>`;
+  multi += `<gml:${memberName}>`;
   geom.forEach(function(member, i){
-    multi += `<gml:${memberName}>`;
     let _gmlId = member.id || (gmlIds || [])[i] || '';
     if (name == 'MultiGeometry'){
       let memberType = member.type;
@@ -54,8 +75,8 @@ function multi(name, memberName, membercb, geom, gmlId, params={}){
     } else {
       multi += membercb(member, _gmlId, params);
     }
-    multi += `</gml:${memberName}>`;
   });
+  multi += `</gml:${memberName}>`;
   return multi + `</gml:${name}>`;
 }
 /**
@@ -73,7 +94,7 @@ function Point(coords, gmlId, params={}){
   var {srsName:srsName, srsDimension:srsDimension} = params;
   return `<gml:Point${attrs({srsName:srsName, 'gml:id': gmlId})}>` +
     `<gml:pos${attrs({srsDimension})}>` +
-    coords.reverse().join(' ') +
+    orderCoords(coords).join(' ') +
     '</gml:pos>' +
     '</gml:Point>';
 }
@@ -92,7 +113,7 @@ function LineString(coords, gmlId, params={}){
   var {srsName:srsName, srsDimension:srsDimension} = params;
   return `<gml:LineString${attrs({srsName, 'gml:id':gmlId})}>` +
     `<gml:posList${attrs({srsDimension})}>` +
-    coords.map((e)=>e.reverse().join(' ')).join(' ') + 
+    coords.map((e)=>orderCoords(e).join(' ')).join(' ') + 
     '</gml:posList>' +
     '</gml:LineString>';
 }
@@ -111,7 +132,7 @@ function LinearRing(coords, gmlId, params={}){
   var {srsName:srsName, srsDimension:srsDimension} = params;
   return `<gml:LinearRing${attrs({'gml:id':gmlId, srsName})}>` +
     `<gml:posList${attrs({srsDimension})}>` +
-    coords.map((e)=>e.reverse().join(' ')).join(' ') + 
+    coords.map((e)=>orderCoords(e).join(' ')).join(' ') + 
     '</gml:posList>' + 
     '</gml:LinearRing>';
 }
@@ -155,7 +176,7 @@ function Polygon(coords, gmlId, params={}){
  */
 function MultiPoint(coords, gmlId, params={}){
   enforceGmlId(gmlId);
-  return multi('MultiPoint', 'pointMember', Point, coords, gmlId, params);
+  return multi('MultiPoint', 'pointMembers', Point, coords, gmlId, params);
 }
 
 /**
@@ -169,7 +190,7 @@ function MultiPoint(coords, gmlId, params={}){
  * @returns {string} a string containing gml representing the input geometry
  */
 function MultiLineString(coords, gmlId, params={}){
-  return multi('MultiCurve', 'curveMember', LineString, coords, gmlId, params);
+  return multi('MultiCurve', 'curveMembers', LineString, coords, gmlId, params);
 }
 /**
  * Converts an input geojson MultiPolygon geometry to gml
@@ -182,7 +203,7 @@ function MultiLineString(coords, gmlId, params={}){
  * @returns {string} a string containing gml representing the input geometry
  */
 function MultiPolygon(coords, gmlId, params={}){
-  return multi('MultiSurface', 'surfaceMember', Polygon, coords, gmlId, params);
+  return multi('MultiSurface', 'surfaceMembers', Polygon, coords, gmlId, params);
 }
 /** @const 
  * @desc a namespace to switch between geojson-handling functions by geojson.type
@@ -202,7 +223,7 @@ const converter = {
  * @returns {string} a string containing gml representing the input geometry
  */
 function GeometryCollection(geoms, gmlId, params={}){
-  return multi('MultiGeometry', 'geometryMember', converter,
+  return multi('MultiGeometry', 'geometryMembers', converter,
                geoms, gmlId, params);
 }
 
@@ -553,7 +574,6 @@ function Transaction(actions, params = {}) {
     srsName, lockId, releaseAction, handle, inputFormat, version, // optional
     nsAssignments, schemaLocations // required
   } = params;
-  let converter$$1 = { Insert, Update, Delete };
   let { insert: toInsert, update: toUpdate, delete: toDelete } = actions || {};
   let finalActions = ''; // processedActions would be more accurate
 
