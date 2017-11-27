@@ -5,8 +5,9 @@
   "main": "geojson-to-wfst-2-cjs.js",
   "module": "geojson-to-wfst-2-es6.js",
   "scripts": {
+    "build": "rollup -c",
     "test": "cd validation; mocha --timeout 60000",
-    "make-docs": "node make-docs.js"
+    "prepublish": "node make-docs.js"
   },
   "keywords": [
     "xml",
