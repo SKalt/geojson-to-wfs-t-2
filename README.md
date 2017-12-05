@@ -16,10 +16,10 @@ and `import/require`-ing the commonjs or es6 module scripts.
 ## Usage
 
 ```{javascript}
-let wfs =  import 'geojson-to-wfst-2';
+import wfs from 'geojson-to-wfst-2';
 // or require('geojson-to-wfst-2') if import is unavailable.
 // this is equivalent to:
-let {Insert, Update, Replace, Delete, Transaction} = import 'geojson-to-wfst-2'
+import {Insert, Update, Replace, Delete, Transaction} from 'geojson-to-wfst-2'
 // check it:
 const assert = require('assert')
 assert.deepEqual(wfs, {Insert, Update, Replace, Delete, Transaction})
