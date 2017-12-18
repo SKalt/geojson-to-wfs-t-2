@@ -242,7 +242,6 @@ const ensureAction = (()=>{
 
 /**
  * Turns an array of geojson features into gml:_feature strings describing them.
- * @private
  * @function
  * @param {Feature[]} features an array of features to translate to
  * gml:_features.

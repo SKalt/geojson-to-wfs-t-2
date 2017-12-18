@@ -1,6 +1,9 @@
 ## Functions
 
 <dl>
+<dt><a href="#translateFeatures">translateFeatures(features, params)</a> ⇒ <code>string</code></dt>
+<dd><p>Turns an array of geojson features into gml:_feature strings describing them.</p>
+</dd>
 <dt><a href="#Insert">Insert(features, params)</a> ⇒ <code>string</code></dt>
 <dd><p>Returns a wfs:Insert tag wrapping a translated feature</p>
 </dd>
@@ -37,6 +40,19 @@ and properties.</p>
 </dd>
 </dl>
 
+<a name="translateFeatures"></a>
+
+## translateFeatures(features, params) ⇒ <code>string</code>
+Turns an array of geojson features into gml:_feature strings describing them.
+
+**Kind**: global function  
+**Returns**: <code>string</code> - a gml:_feature string.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| features | [<code>Array.&lt;Feature&gt;</code>](#Feature) | an array of features to translate to gml:_features. |
+| params | [<code>Params</code>](#Params) | an object of backup / override parameters |
+
 <a name="Insert"></a>
 
 ## Insert(features, params) ⇒ <code>string</code>
@@ -44,10 +60,11 @@ Returns a wfs:Insert tag wrapping a translated feature
 
 **Kind**: global function  
 **Returns**: <code>string</code> - a wfs:Insert string.  
+**See**: translateFeatures  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| features | [<code>Array.&lt;Feature&gt;</code>](#Feature) \| [<code>FeatureCollection</code>](#FeatureCollection) \| [<code>Feature</code>](#Feature) | Feature(s) to pass to @see translateFeatures |
+| features | [<code>Array.&lt;Feature&gt;</code>](#Feature) \| [<code>FeatureCollection</code>](#FeatureCollection) \| [<code>Feature</code>](#Feature) | Feature(s) to pass to |
 | params | [<code>Params</code>](#Params) | to be passed to @see translateFeatures, with optional inputFormat, srsName, handle for the wfs:Insert tag. |
 
 <a name="Update"></a>
@@ -134,7 +151,7 @@ An object containing optional named parameters.
 | handle | <code>string</code> \| <code>undefined</code> | handle parameter, as specified at [OGC 09-025r2 § 7.6.2.6 ](http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#44) |
 | filter | <code>string</code> \| <code>undefined</code> | a string fes:Filter. |
 | typeName | <code>string</code> \| <code>undefined</code> | a string specifying the feature type within its namespace. See [09-025r2 § 7.9.2.4.1](http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#90). |
-| schemaLocations | <code>Object</code> \| <code>undefined</code> | an object mapping uri to schemalocation |
+| schemaLocations | <code>Object</code> \| <code>undefined</code> | an object mapping uri to schema locations |
 | nsAssignments | <code>Object</code> \| <code>undefined</code> | an object mapping ns to uri |
 
 <a name="Feature"></a>
