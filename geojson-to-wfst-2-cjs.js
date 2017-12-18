@@ -249,12 +249,19 @@ function geomToGml(geom, gmlId, params){
   );
 }
 
-/** @const {Object} xml */
+/**
+ * A namespace for xml utilities.
+ * @private
+ * @const
+ * @type {Object}
+ */
 const xml = {
   /**
    * Turns an object into a string of xml attribute key-value pairs.
    * @memberOf xml.
+   * @private
    * @function
+   * @memberof xml
    * @param {Object} attrs an object mapping attribute names to attribute values
    * @returns {string} a string of xml attribute key-value pairs
    */
@@ -263,8 +270,9 @@ const xml = {
   },
   /**
    * Creates a string xml tag.
-   * @function 
-   * @memberOf xml.
+   * @private
+   * @function
+   * @memberof xml.
    * @param {string} ns the tag's xml namespace abbreviation.
    * @param {string} tagName the tag name.
    * @param {Object} attrs @see xml.attrs.
@@ -283,6 +291,7 @@ const xml = {
 };
 /**
  * Shorthand for creating a wfs xml tag.
+ * @private
  * @param {string} tagName a valid wfs tag name.
  * @param {Object} attrs @see xml.attrs.
  * @param {string} inner @see xml.tag.
@@ -290,11 +299,15 @@ const xml = {
 const wfs = (tagName, attrs, inner) => xml.tag('wfs', tagName, attrs, inner);
 /**
  * Ensures the result is an array.
+ * @private
+ * @function
  * @param {Array|Object} maybe a GeoJSON Feature or FeatureCollection object or an array thereof.
  */
 const ensureArray = (...maybe) => (maybe[0].features || [].concat(...maybe)).filter(f => f);
 /**
  * Ensures a layer.id format of an input id.
+ * @private
+ * @function
  * @param {string} lyr layer name
  * @param {string} id id, possibly already in correct layer.id format.
  * @returns {string} a correctly-formatted gml:id
@@ -302,6 +315,8 @@ const ensureArray = (...maybe) => (maybe[0].features || [].concat(...maybe)).fil
 const ensureId = (lyr, id) => /\./.exec(id || '') ? id : `${lyr}.${id}`;
 /**
  * returns a correctly-formatted typeName
+ * @private
+ * @function
  * @param {string} ns namespace
  * @param {string} layer layer name
  * @param {string} typeName typeName to check
@@ -317,12 +332,15 @@ const ensureTypeName = (ns, layer, typeName) => {
 
 /**
  * Stands in for other functions in swich statements, etc. Does nothing.
- * @function 
+ * @private
+ * @function
  */
 const pass = () => '';
 
 /**
  * Iterates over the key-value pairs, filtering by a whitelist if available.
+ * @private
+ * @function
  * @param {Array<string>} whitelist a whitelist of property names
  * @param {Object} properties an object mapping property names to values
  * @param {Function} cb a function to call on each (whitelisted key, value) pair
@@ -334,6 +352,8 @@ const useWhitelistIfAvailable = (whitelist, properties, cb) => {
 };
 /**
  * Creates a fes:ResourceId filter from a layername and id
+ * @private
+ * @function
  * @param {string} lyr layer name of the filtered feature
  * @param {string} id feature id
  */
@@ -366,7 +386,8 @@ const unpack = (() => {
 
 /**
  * Builds a filter from feature ids if one is not already input.
- * @function 
+ * @private
+ * @function
  * @param {string|undefined} filter a possible string filter
  * @param {Array<Object>} features an array of geojson feature objects
  * @param {Object} params an object of backup / override parameters
@@ -393,11 +414,11 @@ function ensureFilter(filter, features, params) {
  * @prop {string|undefined} geometry_name the name of the feature geometry field.
  * @prop {Object|undefined} properties an object mapping feature field names to feature properties
  * @prop {string|undefined} id a string feature id.
- * @prop {string[]|undefined} whitelist an array of string field names to 
+ * @prop {string[]|undefined} whitelist an array of string field names to
  * use from @see Params.properties
- * @prop {string|undefined} inputFormat inputFormat, as specified at 
+ * @prop {string|undefined} inputFormat inputFormat, as specified at
  * [OGC 09-025r2 § 7.6.5.4]{@link http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#65}.
- * @prop {string|undefined} srsName srsName, as specified at 
+ * @prop {string|undefined} srsName srsName, as specified at
  * [OGC 09-025r2 § 7.6.5.5]{@link http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#66}.
  * if undefined, the gml3 module will default to 'EPSG:4326'.
  * @prop {string|undefined} handle handle parameter, as specified at
@@ -410,7 +431,7 @@ function ensureFilter(filter, features, params) {
  */
 
 /**
- * A GeoJSON feature with the following optional foreign members (see 
+ * A GeoJSON feature with the following optional foreign members (see
  * [rfc7965 § 6]{@link https://tools.ietf.org/html/rfc7946#section-6}).
  * or an object with some of the following members.
  * Members of Feature will be used over those in Params except for layer, id,
@@ -419,8 +440,8 @@ function ensureFilter(filter, features, params) {
  * @extends Params
  * @property {Object|undefined} geometry a GeoJSON geometry.
  * @property {string|undefined} type 'Feature'.
- * @example 
- * {'id':'tasmania_roads.1', 'typeName':'topp:tasmania_roadsType'} 
+ * @example
+ * {'id':'tasmania_roads.1', 'typeName':'topp:tasmania_roadsType'}
  * // can be passed to Delete
  */
 
@@ -434,10 +455,11 @@ function ensureFilter(filter, features, params) {
 
 /**
  * Turns an array of geojson features into gml:_feature strings describing them.
- * @function 
- * @param {Feature[]} features an array of features to translate to 
+ * @private
+ * @function
+ * @param {Feature[]} features an array of features to translate to
  * gml:_features.
- * @param {Params} params an object of backup / override parameters 
+ * @param {Params} params an object of backup / override parameters
  * @returns {string} a gml:_feature string.
  */
 function translateFeatures(features, params = {}) {
@@ -458,7 +480,7 @@ function translateFeatures(features, params = {}) {
 
 /**
  * Returns a wfs:Insert tag wrapping a translated feature
- * @function 
+ * @function
  * @param {Feature[]|FeatureCollection|Feature} features Feature(s) to pass to @see translateFeatures
  * @param {Params} params to be passed to @see translateFeatures, with optional
  * inputFormat, srsName, handle for the wfs:Insert tag.
@@ -477,21 +499,22 @@ function Insert(features, params = {}) {
 
 /**
  * Updates the input features in bulk with params.properties or by id.
- * @param {Feature[]|FeatureCollection} features features to update.  These may 
- * pass in geometry_name, properties, and layer (overruled by params) and 
+ * @param {Feature[]|FeatureCollection} features features to update.  These may
+ * pass in geometry_name, properties, and layer (overruled by params) and
  * ns, layer, srsName (overruling params).
- * @param {Params} params with optional properties, ns, layer, geometry_name,
- * filter, typeName, whitelist.
+ * @param {Params} params with optional properties, ns (namespace), layer,
+ *  geometry_name, filter, typeName, whitelist.
  * @returns {string} a string wfs:Upate action.
  */
 function Update(features, params = {}) {
   features = ensureArray(features);
   /**
    * makes a wfs:Property string containg a wfs:ValueReference, wfs:Value pair.
-   * @function 
+   * @private
+   * @function
    * @memberof Update~
    * @param {string} prop the field/property name
-   * @param {string} val the field/property value 
+   * @param {string} val the field/property value
    * @param {string} action one of 'insertBefore', 'insertAfter', 'remove',
    * 'replace'. See [OGC 09-025r2 § 15.2.5.2.1]{@link http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#286}.
    * `action` would delete or modify the order of fields within the remote
@@ -522,7 +545,7 @@ function Update(features, params = {}) {
 }
 
 /**
- * Creates a wfs:Delete action, creating a filter and typeName from feature ids 
+ * Creates a wfs:Delete action, creating a filter and typeName from feature ids
  * if none are supplied.
  * @param {Feature[]|FeatureCollection|Feature} features
  * @param {Params} params optional parameter overrides.
@@ -560,13 +583,13 @@ function Replace(features, params = {}) {
 /**
  * Wraps the input actions in a wfs:Transaction.
  * @param {Object|string[]|string} actions an object mapping {Insert, Update,
- * Delete} to feature(s) to pass to Insert, Update, Delete, or wfs:action 
+ * Delete} to feature(s) to pass to Insert, Update, Delete, or wfs:action
  * string(s) to wrap in a transaction.
  * @param {Object} params optional srsName, lockId, releaseAction, handle,
  * inputFormat, version, and required nsAssignments, schemaLocations.
  * @returns {string} A wfs:transaction wrapping the input actions.
- * @throws {Error} if `actions` is not an array of strings, a string, or 
- * {@see Insert, @see Update, @see Delete}, where each action are valid inputs 
+ * @throws {Error} if `actions` is not an array of strings, a string, or
+ * {@see Insert, @see Update, @see Delete}, where each action are valid inputs
  * to the eponymous function.
  */
 function Transaction(actions, params = {}) {
@@ -574,6 +597,7 @@ function Transaction(actions, params = {}) {
     srsName, lockId, releaseAction, handle, inputFormat, version, // optional
     nsAssignments, schemaLocations // required
   } = params;
+  let converter$$1 = { Insert, Update, Delete };
   let { insert: toInsert, update: toUpdate, delete: toDelete } = actions || {};
   let finalActions = ''; // processedActions would be more accurate
 
@@ -598,6 +622,7 @@ function Transaction(actions, params = {}) {
 
 /**
  * Generates an object to be passed to @see xml.attrs xmlns:ns="uri" definitions for a wfs:Transaction
+ * @private
  * @param {Object} nsAssignments @see Params.nsAssignments
  * @param {string} xml arbitrary xml.
  * @returns {Object} an object mapping each ns to its URI as 'xmlns:ns' : 'URI'.
@@ -609,7 +634,7 @@ function generateNsAssignments(nsAssignments, xml) {
   for (let ns in nsAssignments) {
     makeNsAssignment(ns, nsAssignments[ns]);
   }
-  // check all ns's assigned 
+  // check all ns's assigned
   var re = /(<|typeName=")(\w+):/g;
   var arr;
   var allNamespaces = new Set();
@@ -633,6 +658,7 @@ function generateNsAssignments(nsAssignments, xml) {
 
 /**
  * Returns a string alternating uri, whitespace, and the uri's schema's location.
+ * @private
  * @param {Object} schemaLocations an object mapping uri:schemalocation
  * @returns {string} a string that is a valid xsi:schemaLocation value.
  */
