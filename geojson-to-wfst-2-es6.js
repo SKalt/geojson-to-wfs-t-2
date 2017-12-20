@@ -218,6 +218,17 @@ const ensureAction = (()=>{
  */
 
 /**
+ * An object containing optional named parameters for a transaction in addition
+ * to parameters used elsewhere.
+ * @typedef {Object} TransactionParams
+ * @extends Params
+ * @prop {string|undefined} lockId lockId parameter, as specified at
+ * [OGC 09-025r2 § 15.2.3.1.2]{@link http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#277}.
+ * @prop {string|undefined} releaseAction releaseAction parameter, as specified
+ * at [OGC 09-025r2 § 15.2.3.2]{@link http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#278}.
+ */
+
+/**
  * A GeoJSON feature with the following optional foreign members (see
  * [rfc7965 § 6]{@link https://tools.ietf.org/html/rfc7946#section-6}).
  * or an object with some of the following members.
@@ -400,7 +411,7 @@ function Replace(features, params={}) {
  * @param {Object|string[]|string} actions an object mapping {Insert, Update,
  * Delete} to feature(s) to pass to Insert, Update, Delete, or wfs:action
  * string(s) to wrap in a transaction.
- * @param {Object} params optional srsName, lockId, releaseAction, handle,
+ * @param {TransactionParams} params optional srsName, lockId, releaseAction, handle,
  * inputFormat, version, and required nsAssignments, schemaLocations.
  * @return {string} A wfs:transaction wrapping the input actions.
  * @throws {Error} if `actions` is not an array of strings, a string, or
@@ -408,7 +419,7 @@ function Replace(features, params={}) {
  * to the eponymous function.
  */
 function Transaction(actions, params={}) {
-  const transactionParams = [ 'srsName', 'lockId', 'releaseAction', 'handle' ];
+  const transactionParams = ['srsName', 'lockId', 'releaseAction', 'handle'];
   let {
     /* srsName, lockId, releaseAction, handle, inputFormat, */ version, // optional
     nsAssignments/* , schemaLocations*/ // required
