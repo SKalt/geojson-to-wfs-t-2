@@ -422,7 +422,7 @@ function Transaction(actions, params={}) {
   const transactionParams = ['srsName', 'lockId', 'releaseAction', 'handle'];
   let {
     /* srsName, lockId, releaseAction, handle, inputFormat, */ version, // optional
-    nsAssignments/* , schemaLocations*/ // required
+    nsAssignments = {} /*, schemaLocations*/ // required
   } = params;
   // let converter = {Insert, Update, Delete};
   let {insert:toInsert, update:toUpdate, delete:toDelete} = actions || {};
@@ -440,10 +440,8 @@ function Transaction(actions, params={}) {
     throw new Error(`unexpected input: ${JSON.stringify(actions)}`);
   }
   // generate schemaLocation, xmlns's
-  nsAssignments = nsAssignments || {};
-  schemaLocations = schemaLocations || {};
   let attrs = generateNsAssignments(nsAssignments, actions);
-  attrs['xsi:schemaLocation'] =  generateSchemaLines(params.schemaLocations);
+  attrs['xsi:schemaLocation'] = generateSchemaLines(params.schemaLocations);
   attrs['service'] = 'WFS';
   attrs['version'] = /2\.0\.\d+/.exec(version || '') ? version : '2.0.0';
   transactionParams.forEach((param) => {
