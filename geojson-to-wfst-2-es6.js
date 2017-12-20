@@ -408,8 +408,9 @@ function Replace(features, params={}) {
  * to the eponymous function.
  */
 function Transaction(actions, params={}) {
+  const transactionParams = [ 'srsName', 'lockId', 'releaseAction', 'handle' ];
   let {
-    // srsName, lockId, releaseAction, handle, inputFormat, version, // optional
+    /* srsName, lockId, releaseAction, handle, inputFormat, */ version, // optional
     nsAssignments/* , schemaLocations*/ // required
   } = params;
   // let converter = {Insert, Update, Delete};
@@ -434,6 +435,11 @@ function Transaction(actions, params={}) {
   attrs['xsi:schemaLocation'] =  generateSchemaLines(params.schemaLocations);
   attrs['service'] = 'WFS';
   attrs['version'] = /2\.0\.\d+/.exec(version || '') ? version : '2.0.0';
+  transactionParams.forEach((param) => {
+    if (params[param]) {
+      attrs[param] = params[param];
+    }
+  });
   return wfs('Transaction', attrs, finalActions);
 }
 
