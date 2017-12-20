@@ -249,6 +249,354 @@ function geomToGml(geom, gmlId, params){
   );
 }
 
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var _global = createCommonjsModule(function (module) {
+// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+var global = module.exports = typeof window != 'undefined' && window.Math == Math
+  ? window : typeof self != 'undefined' && self.Math == Math ? self
+  // eslint-disable-next-line no-new-func
+  : Function('return this')();
+if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
+});
+
+var _core = createCommonjsModule(function (module) {
+var core = module.exports = { version: '2.5.3' };
+if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
+});
+
+var _isObject = function (it) {
+  return typeof it === 'object' ? it !== null : typeof it === 'function';
+};
+
+var _anObject = function (it) {
+  if (!_isObject(it)) throw TypeError(it + ' is not an object!');
+  return it;
+};
+
+var _fails = function (exec) {
+  try {
+    return !!exec();
+  } catch (e) {
+    return true;
+  }
+};
+
+// Thank's IE8 for his funny defineProperty
+var _descriptors = !_fails(function () {
+  return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
+});
+
+var document = _global.document;
+// typeof document.createElement is 'object' in old IE
+var is = _isObject(document) && _isObject(document.createElement);
+var _domCreate = function (it) {
+  return is ? document.createElement(it) : {};
+};
+
+var _ie8DomDefine = !_descriptors && !_fails(function () {
+  return Object.defineProperty(_domCreate('div'), 'a', { get: function () { return 7; } }).a != 7;
+});
+
+// 7.1.1 ToPrimitive(input [, PreferredType])
+
+// instead of the ES6 spec version, we didn't implement @@toPrimitive case
+// and the second argument - flag - preferred type is a string
+var _toPrimitive = function (it, S) {
+  if (!_isObject(it)) return it;
+  var fn, val;
+  if (S && typeof (fn = it.toString) == 'function' && !_isObject(val = fn.call(it))) return val;
+  if (typeof (fn = it.valueOf) == 'function' && !_isObject(val = fn.call(it))) return val;
+  if (!S && typeof (fn = it.toString) == 'function' && !_isObject(val = fn.call(it))) return val;
+  throw TypeError("Can't convert object to primitive value");
+};
+
+var dP = Object.defineProperty;
+
+var f = _descriptors ? Object.defineProperty : function defineProperty(O, P, Attributes) {
+  _anObject(O);
+  P = _toPrimitive(P, true);
+  _anObject(Attributes);
+  if (_ie8DomDefine) try {
+    return dP(O, P, Attributes);
+  } catch (e) { /* empty */ }
+  if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported!');
+  if ('value' in Attributes) O[P] = Attributes.value;
+  return O;
+};
+
+var _objectDp = {
+	f: f
+};
+
+var _propertyDesc = function (bitmap, value) {
+  return {
+    enumerable: !(bitmap & 1),
+    configurable: !(bitmap & 2),
+    writable: !(bitmap & 4),
+    value: value
+  };
+};
+
+var _hide = _descriptors ? function (object, key, value) {
+  return _objectDp.f(object, key, _propertyDesc(1, value));
+} : function (object, key, value) {
+  object[key] = value;
+  return object;
+};
+
+var hasOwnProperty = {}.hasOwnProperty;
+var _has = function (it, key) {
+  return hasOwnProperty.call(it, key);
+};
+
+var id = 0;
+var px = Math.random();
+var _uid = function (key) {
+  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
+};
+
+var _redefine = createCommonjsModule(function (module) {
+var SRC = _uid('src');
+var TO_STRING = 'toString';
+var $toString = Function[TO_STRING];
+var TPL = ('' + $toString).split(TO_STRING);
+
+_core.inspectSource = function (it) {
+  return $toString.call(it);
+};
+
+(module.exports = function (O, key, val, safe) {
+  var isFunction = typeof val == 'function';
+  if (isFunction) _has(val, 'name') || _hide(val, 'name', key);
+  if (O[key] === val) return;
+  if (isFunction) _has(val, SRC) || _hide(val, SRC, O[key] ? '' + O[key] : TPL.join(String(key)));
+  if (O === _global) {
+    O[key] = val;
+  } else if (!safe) {
+    delete O[key];
+    _hide(O, key, val);
+  } else if (O[key]) {
+    O[key] = val;
+  } else {
+    _hide(O, key, val);
+  }
+// add fake Function#toString for correct work wrapped methods / constructors with methods like LoDash isNative
+})(Function.prototype, TO_STRING, function toString() {
+  return typeof this == 'function' && this[SRC] || $toString.call(this);
+});
+});
+
+var _aFunction = function (it) {
+  if (typeof it != 'function') throw TypeError(it + ' is not a function!');
+  return it;
+};
+
+// optional / simple context binding
+
+var _ctx = function (fn, that, length) {
+  _aFunction(fn);
+  if (that === undefined) return fn;
+  switch (length) {
+    case 1: return function (a) {
+      return fn.call(that, a);
+    };
+    case 2: return function (a, b) {
+      return fn.call(that, a, b);
+    };
+    case 3: return function (a, b, c) {
+      return fn.call(that, a, b, c);
+    };
+  }
+  return function (/* ...args */) {
+    return fn.apply(that, arguments);
+  };
+};
+
+var PROTOTYPE = 'prototype';
+
+var $export = function (type, name, source) {
+  var IS_FORCED = type & $export.F;
+  var IS_GLOBAL = type & $export.G;
+  var IS_STATIC = type & $export.S;
+  var IS_PROTO = type & $export.P;
+  var IS_BIND = type & $export.B;
+  var target = IS_GLOBAL ? _global : IS_STATIC ? _global[name] || (_global[name] = {}) : (_global[name] || {})[PROTOTYPE];
+  var exports = IS_GLOBAL ? _core : _core[name] || (_core[name] = {});
+  var expProto = exports[PROTOTYPE] || (exports[PROTOTYPE] = {});
+  var key, own, out, exp;
+  if (IS_GLOBAL) source = name;
+  for (key in source) {
+    // contains in native
+    own = !IS_FORCED && target && target[key] !== undefined;
+    // export native or passed
+    out = (own ? target : source)[key];
+    // bind timers to global for call from export context
+    exp = IS_BIND && own ? _ctx(out, _global) : IS_PROTO && typeof out == 'function' ? _ctx(Function.call, out) : out;
+    // extend global
+    if (target) _redefine(target, key, out, type & $export.U);
+    // export
+    if (exports[key] != out) _hide(exports, key, exp);
+    if (IS_PROTO && expProto[key] != out) expProto[key] = out;
+  }
+};
+_global.core = _core;
+// type bitmap
+$export.F = 1;   // forced
+$export.G = 2;   // global
+$export.S = 4;   // static
+$export.P = 8;   // proto
+$export.B = 16;  // bind
+$export.W = 32;  // wrap
+$export.U = 64;  // safe
+$export.R = 128; // real proto method for `library`
+var _export = $export;
+
+var toString = {}.toString;
+
+var _cof = function (it) {
+  return toString.call(it).slice(8, -1);
+};
+
+// fallback for non-array-like ES3 and non-enumerable old V8 strings
+
+// eslint-disable-next-line no-prototype-builtins
+var _iobject = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
+  return _cof(it) == 'String' ? it.split('') : Object(it);
+};
+
+// 7.2.1 RequireObjectCoercible(argument)
+var _defined = function (it) {
+  if (it == undefined) throw TypeError("Can't call method on  " + it);
+  return it;
+};
+
+// to indexed object, toObject with fallback for non-array-like ES3 strings
+
+
+var _toIobject = function (it) {
+  return _iobject(_defined(it));
+};
+
+// 7.1.4 ToInteger
+var ceil = Math.ceil;
+var floor = Math.floor;
+var _toInteger = function (it) {
+  return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
+};
+
+// 7.1.15 ToLength
+
+var min = Math.min;
+var _toLength = function (it) {
+  return it > 0 ? min(_toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
+};
+
+var max = Math.max;
+var min$1 = Math.min;
+var _toAbsoluteIndex = function (index, length) {
+  index = _toInteger(index);
+  return index < 0 ? max(index + length, 0) : min$1(index, length);
+};
+
+// false -> Array#indexOf
+// true  -> Array#includes
+
+
+
+var _arrayIncludes = function (IS_INCLUDES) {
+  return function ($this, el, fromIndex) {
+    var O = _toIobject($this);
+    var length = _toLength(O.length);
+    var index = _toAbsoluteIndex(fromIndex, length);
+    var value;
+    // Array#includes uses SameValueZero equality algorithm
+    // eslint-disable-next-line no-self-compare
+    if (IS_INCLUDES && el != el) while (length > index) {
+      value = O[index++];
+      // eslint-disable-next-line no-self-compare
+      if (value != value) return true;
+    // Array#indexOf ignores holes, Array#includes - not
+    } else for (;length > index; index++) if (IS_INCLUDES || index in O) {
+      if (O[index] === el) return IS_INCLUDES || index || 0;
+    } return !IS_INCLUDES && -1;
+  };
+};
+
+var SHARED = '__core-js_shared__';
+var store = _global[SHARED] || (_global[SHARED] = {});
+var _shared = function (key) {
+  return store[key] || (store[key] = {});
+};
+
+var shared = _shared('keys');
+
+var _sharedKey = function (key) {
+  return shared[key] || (shared[key] = _uid(key));
+};
+
+var arrayIndexOf = _arrayIncludes(false);
+var IE_PROTO = _sharedKey('IE_PROTO');
+
+var _objectKeysInternal = function (object, names) {
+  var O = _toIobject(object);
+  var i = 0;
+  var result = [];
+  var key;
+  for (key in O) if (key != IE_PROTO) _has(O, key) && result.push(key);
+  // Don't enum bug & hidden keys
+  while (names.length > i) if (_has(O, key = names[i++])) {
+    ~arrayIndexOf(result, key) || result.push(key);
+  }
+  return result;
+};
+
+// IE 8- don't enum bug keys
+var _enumBugKeys = (
+  'constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf'
+).split(',');
+
+// 19.1.2.14 / 15.2.3.14 Object.keys(O)
+
+
+
+var _objectKeys = Object.keys || function keys(O) {
+  return _objectKeysInternal(O, _enumBugKeys);
+};
+
+var f$1 = {}.propertyIsEnumerable;
+
+var _objectPie = {
+	f: f$1
+};
+
+var isEnum = _objectPie.f;
+var _objectToArray = function (isEntries) {
+  return function (it) {
+    var O = _toIobject(it);
+    var keys = _objectKeys(O);
+    var length = keys.length;
+    var i = 0;
+    var result = [];
+    var key;
+    while (length > i) if (isEnum.call(O, key = keys[i++])) {
+      result.push(isEntries ? [key, O[key]] : O[key]);
+    } return result;
+  };
+};
+
+// https://github.com/tc39/proposal-object-values-entries
+
+var $entries = _objectToArray(true);
+
+_export(_export.S, 'Object', {
+  entries: function entries(it) {
+    return $entries(it);
+  }
+});
+
 /**
  * A namespace for xml utilities.
  * @private
@@ -263,7 +611,7 @@ const xml = {
    * @function
    * @memberof xml
    * @param {Object} attrs an object mapping attribute names to attribute values
-   * @returns {string} a string of xml attribute key-value pairs
+   * @return {string} a string of xml attribute key-value pairs
    */
   'attrs': function (attrs) {
     return Object.keys(attrs).map(a => attrs[a] ? ` ${a}="${attrs[a]}"` : '').join('');
@@ -277,7 +625,7 @@ const xml = {
    * @param {string} tagName the tag name.
    * @param {Object} attrs @see xml.attrs.
    * @param {string} inner inner xml.
-   * @returns {string} an xml string.
+   * @return {string} an xml string.
    */
   'tag': function (ns, tagName, attrs, inner) {
     // TODO: self-closing
@@ -285,7 +633,7 @@ const xml = {
     if (tagName) {
       return `<${tag}${this.attrs(attrs)}>${inner}</${tag}>`;
     } else {
-      throw new Error('no tag supplied ' + JSON.stringify(arguments));
+      throw new Error('no tag supplied ' + JSON.stringify([ns, tagName, attrs, inner]));
     }
   }
 };
@@ -295,13 +643,16 @@ const xml = {
  * @param {string} tagName a valid wfs tag name.
  * @param {Object} attrs @see xml.attrs.
  * @param {string} inner @see xml.tag.
+ * @return {string} a wfs element.
  */
 const wfs = (tagName, attrs, inner) => xml.tag('wfs', tagName, attrs, inner);
 /**
  * Ensures the result is an array.
  * @private
  * @function
- * @param {Array|Object} maybe a GeoJSON Feature or FeatureCollection object or an array thereof.
+ * @param {Feature|Feature[]|FeatureCollection} maybe a GeoJSON
+ * FeatureCollection, Feature, or an array of Features.
+ * @return {Feature[]}
  */
 const ensureArray = (...maybe) => (maybe[0].features || [].concat(...maybe)).filter(f => f);
 /**
@@ -310,17 +661,17 @@ const ensureArray = (...maybe) => (maybe[0].features || [].concat(...maybe)).fil
  * @function
  * @param {string} lyr layer name
  * @param {string} id id, possibly already in correct layer.id format.
- * @returns {string} a correctly-formatted gml:id
+ * @return {string} a correctly-formatted gml:id
  */
 const ensureId = (lyr, id) => /\./.exec(id || '') ? id : `${lyr}.${id}`;
 /**
- * returns a correctly-formatted typeName
+ * return a correctly-formatted typeName
  * @private
  * @function
  * @param {string} ns namespace
  * @param {string} layer layer name
  * @param {string} typeName typeName to check
- * @returns {string} a correctly-formatted typeName
+ * @return {string} a correctly-formatted typeName
  * @throws {Error} if typeName it cannot form a typeName from ns and layer
  */
 const ensureTypeName = (ns, layer, typeName) => {
@@ -334,8 +685,9 @@ const ensureTypeName = (ns, layer, typeName) => {
  * Stands in for other functions in swich statements, etc. Does nothing.
  * @private
  * @function
+ * @return {undefined} nothng.
  */
-const pass = () => '';
+const pass = () => undefined;
 
 /**
  * Iterates over the key-value pairs, filtering by a whitelist if available.
@@ -356,6 +708,7 @@ const useWhitelistIfAvailable = (whitelist, properties, cb) => {
  * @function
  * @param {string} lyr layer name of the filtered feature
  * @param {string} id feature id
+ * @return {string} a filter-ecoding of the filter.
  */
 const idFilter = (lyr, id) => `<fes:ResourceId rid="${ensureId(lyr, id)}"/>`;
 
@@ -366,8 +719,10 @@ const unpack = (() => {
    * found in the feature
    * @param {Object} feature a geojson feature
    * @param {Object} params an object of backup / override parameters
-   * @param {Array<string>} args parameter names to resolve from feature or params
-   * @returns {Object} an object mapping each named parameter to its resolved value
+   * @param {Array<string>} args parameter names to resolve from feature or
+   * params
+   * @return {Object} an object mapping each named parameter to its resolved
+   * value
    */
   return (feature, params, ...args) => {
     let results = {};
@@ -391,7 +746,7 @@ const unpack = (() => {
  * @param {string|undefined} filter a possible string filter
  * @param {Array<Object>} features an array of geojson feature objects
  * @param {Object} params an object of backup / override parameters
- * @returns {string} A filter, or the input filter if it was a string.
+ * @return {string} A filter, or the input filter if it was a string.
  */
 function ensureFilter(filter, features, params) {
   if (!filter) {
@@ -405,14 +760,17 @@ function ensureFilter(filter, features, params) {
     return filter;
   }
 }
+
 /**
  * An object containing optional named parameters.
  * @typedef {Object} Params
  * @prop {string|undefined} ns an xml namespace alias.
  * @prop {string|Object|undefined} layer a string layer name or {id}, where id
  * is the layer name
- * @prop {string|undefined} geometry_name the name of the feature geometry field.
- * @prop {Object|undefined} properties an object mapping feature field names to feature properties
+ * @prop {string|undefined} geometry_name the name of the feature geometry
+ * field.
+ * @prop {Object|undefined} properties an object mapping feature field names to
+ * feature properties
  * @prop {string|undefined} id a string feature id.
  * @prop {string[]|undefined} whitelist an array of string field names to
  * use from @see Params.properties
@@ -426,8 +784,20 @@ function ensureFilter(filter, features, params) {
  * @prop {string|undefined} filter a string fes:Filter.
  * @prop {string|undefined} typeName a string specifying the feature type within
  * its namespace. See [09-025r2 § 7.9.2.4.1]{@link http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#90}.
- * @prop {Object|undefined} schemaLocations an object mapping uri to schemalocation
+ * @prop {Object|undefined} schemaLocations an object mapping uri to
+ * schema locations
  * @prop {Object|undefined} nsAssignments an object mapping ns to uri
+ */
+
+/**
+ * An object containing optional named parameters for a transaction in addition
+ * to parameters used elsewhere.
+ * @typedef {Object} TransactionParams
+ * @extends Params
+ * @prop {string|undefined} lockId lockId parameter, as specified at
+ * [OGC 09-025r2 § 15.2.3.1.2]{@link http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#277}.
+ * @prop {string|undefined} releaseAction releaseAction parameter, as specified
+ * at [OGC 09-025r2 § 15.2.3.2]{@link http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#278}.
  */
 
 /**
@@ -455,12 +825,11 @@ function ensureFilter(filter, features, params) {
 
 /**
  * Turns an array of geojson features into gml:_feature strings describing them.
- * @private
  * @function
  * @param {Feature[]} features an array of features to translate to
  * gml:_features.
  * @param {Params} params an object of backup / override parameters
- * @returns {string} a gml:_feature string.
+ * @return {string} a gml:_feature string.
  */
 function translateFeatures(features, params = {}) {
   let inner = '';
@@ -481,10 +850,11 @@ function translateFeatures(features, params = {}) {
 /**
  * Returns a wfs:Insert tag wrapping a translated feature
  * @function
- * @param {Feature[]|FeatureCollection|Feature} features Feature(s) to pass to @see translateFeatures
+ * @param {Feature[]|FeatureCollection|Feature} features Feature(s) to pass to
+ *  @see translateFeatures
  * @param {Params} params to be passed to @see translateFeatures, with optional
  * inputFormat, srsName, handle for the wfs:Insert tag.
- * @returns {string} a wfs:Insert string.
+ * @return {string} a wfs:Insert string.
  */
 function Insert(features, params = {}) {
   features = ensureArray(features);
@@ -504,7 +874,7 @@ function Insert(features, params = {}) {
  * ns, layer, srsName (overruling params).
  * @param {Params} params with optional properties, ns (namespace), layer,
  *  geometry_name, filter, typeName, whitelist.
- * @returns {string} a string wfs:Upate action.
+ * @return {string} a string wfs:Upate action.
  */
 function Update(features, params = {}) {
   features = ensureArray(features);
@@ -520,10 +890,11 @@ function Update(features, params = {}) {
    * `action` would delete or modify the order of fields within the remote
    * feature. There is currently no way to input `action,` since wfs:Update's
    * default action, 'replace', is sufficient.
+   * @return {string} a wfs:Property(wfs:ValueReference) pair.
    */
   const makeKvp = (prop, val, action) => wfs('Property', {}, wfs('ValueReference', { action }, prop) + (val !== undefined ? wfs('Value', {}, val) : ''));
   if (params.properties) {
-    let { handle, inputFormat, filter, typeName, whitelist } = params;
+    let { /* handle, */inputFormat, filter, typeName, whitelist } = params;
     let { srsName, ns, layer, geometry_name } = unpack(features[0] || {}, params, 'srsName', 'ns', 'layer', 'geometry_name');
     typeName = ensureTypeName(ns, layer, typeName);
     filter = ensureFilter(filter, features, params);
@@ -555,11 +926,11 @@ function Update(features, params = {}) {
  * from feature/params layer and ns if this is left undefined.
  * @param {filter} [params.filter] @see Params.filter.  This will be inferred
  * from feature ids and layer(s) if left undefined (@see ensureFilter).
- * @returns {string} a wfs:Delete string.
+ * @return {string} a wfs:Delete string.
  */
 function Delete(features, params = {}) {
   features = ensureArray(features);
-  let { filter, typeName } = params; //TODO: recure & encapsulate by typeName
+  let { filter, typeName } = params; // TODO: recurse & encapsulate by typeName
   let { ns, layer } = unpack(features[0] || {}, params, 'layer', 'ns');
   typeName = ensureTypeName(ns, layer, typeName);
   filter = ensureFilter(filter, features, params);
@@ -570,7 +941,7 @@ function Delete(features, params = {}) {
  * Returns a string wfs:Replace action.
  * @param {Feature[]|FeatureCollection|Feature} features feature(s) to replace
  * @param {Params} params with optional filter, inputFormat, srsName
- * @returns {string} a string wfs:Replace action.
+ * @return {string} a string wfs:Replace action.
  */
 function Replace(features, params = {}) {
   features = ensureArray(features);
@@ -585,19 +956,20 @@ function Replace(features, params = {}) {
  * @param {Object|string[]|string} actions an object mapping {Insert, Update,
  * Delete} to feature(s) to pass to Insert, Update, Delete, or wfs:action
  * string(s) to wrap in a transaction.
- * @param {Object} params optional srsName, lockId, releaseAction, handle,
+ * @param {TransactionParams} params optional srsName, lockId, releaseAction, handle,
  * inputFormat, version, and required nsAssignments, schemaLocations.
- * @returns {string} A wfs:transaction wrapping the input actions.
+ * @return {string} A wfs:transaction wrapping the input actions.
  * @throws {Error} if `actions` is not an array of strings, a string, or
  * {@see Insert, @see Update, @see Delete}, where each action are valid inputs
  * to the eponymous function.
  */
 function Transaction(actions, params = {}) {
+  const transactionParams = ['srsName', 'lockId', 'releaseAction', 'handle'];
   let {
-    srsName, lockId, releaseAction, handle, inputFormat, version, // optional
-    nsAssignments, schemaLocations // required
+    /* srsName, lockId, releaseAction, handle, inputFormat, */version, // optional
+    nsAssignments = {} /*, schemaLocations*/ // required
   } = params;
-  let converter$$1 = { Insert, Update, Delete };
+  // let converter = {Insert, Update, Delete};
   let { insert: toInsert, update: toUpdate, delete: toDelete } = actions || {};
   let finalActions = ''; // processedActions would be more accurate
 
@@ -611,12 +983,15 @@ function Transaction(actions, params = {}) {
     throw new Error(`unexpected input: ${JSON.stringify(actions)}`);
   }
   // generate schemaLocation, xmlns's
-  nsAssignments = nsAssignments || {};
-  schemaLocations = schemaLocations || {};
   let attrs = generateNsAssignments(nsAssignments, actions);
   attrs['xsi:schemaLocation'] = generateSchemaLines(params.schemaLocations);
   attrs['service'] = 'WFS';
   attrs['version'] = /2\.0\.\d+/.exec(version || '') ? version : '2.0.0';
+  transactionParams.forEach(param => {
+    if (params[param]) {
+      attrs[param] = params[param];
+    }
+  });
   return wfs('Transaction', attrs, finalActions);
 }
 
@@ -625,7 +1000,7 @@ function Transaction(actions, params = {}) {
  * @private
  * @param {Object} nsAssignments @see Params.nsAssignments
  * @param {string} xml arbitrary xml.
- * @returns {Object} an object mapping each ns to its URI as 'xmlns:ns' : 'URI'.
+ * @return {Object} an object mapping each ns to its URI as 'xmlns:ns' : 'URI'.
  * @throws {Error} if any namespace used within `xml` is missing a URI definition
  */
 function generateNsAssignments(nsAssignments, xml) {
@@ -652,23 +1027,22 @@ function generateNsAssignments(nsAssignments, xml) {
     if (!attrs['xmlns:' + ns]) {
       throw new Error(`unassigned namespace ${ns}`);
     }
-  }
+  } /*, schemaLocations*/
   return attrs;
 }
 
 /**
- * Returns a string alternating uri, whitespace, and the uri's schema's location.
+ * Returns a string alternating uri, whitespace, and the uri's schema's
+ * location.
  * @private
  * @param {Object} schemaLocations an object mapping uri:schemalocation
- * @returns {string} a string that is a valid xsi:schemaLocation value.
+ * @return {string} a string that is a valid xsi:schemaLocation value.
  */
 function generateSchemaLines(schemaLocations = {}) {
-  //TODO: add ns assignment check
+  // TODO: add ns assignment check
   schemaLocations['http://www.opengis.net/wfs/2.0'] = 'http://schemas.opengis.net/wfs/2.0/wfs.xsd';
-  var schemaLines = [];
-  for (let uri in schemaLocations) {
-    schemaLines.push(`${uri}\n${schemaLocations[uri]}`);
-  }
+  let schemaLines = [];
+  Object.entries(schemaLocations).forEach(entry => schemaLines.push(entry.join('\n')));
   return schemaLines.join('\n');
 }
 

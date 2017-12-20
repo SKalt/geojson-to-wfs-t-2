@@ -28,6 +28,10 @@ if none are supplied.</p>
 <dt><a href="#Params">Params</a> : <code>Object</code></dt>
 <dd><p>An object containing optional named parameters.</p>
 </dd>
+<dt><a href="#TransactionParams">TransactionParams</a> : <code>Object</code></dt>
+<dd><p>An object containing optional named parameters for a transaction in addition
+to parameters used elsewhere.</p>
+</dd>
 <dt><a href="#Feature">Feature</a> : <code>Object</code></dt>
 <dd><p>A GeoJSON feature with the following optional foreign members (see
 <a href="https://tools.ietf.org/html/rfc7946#section-6">rfc7965 § 6</a>).
@@ -128,7 +132,7 @@ to the eponymous function.
 | Param | Type | Description |
 | --- | --- | --- |
 | actions | <code>Object</code> \| <code>Array.&lt;string&gt;</code> \| <code>string</code> | an object mapping {Insert, Update, Delete} to feature(s) to pass to Insert, Update, Delete, or wfs:action string(s) to wrap in a transaction. |
-| params | <code>Object</code> | optional srsName, lockId, releaseAction, handle, inputFormat, version, and required nsAssignments, schemaLocations. |
+| params | [<code>TransactionParams</code>](#TransactionParams) | optional srsName, lockId, releaseAction, handle, inputFormat, version, and required nsAssignments, schemaLocations. |
 
 <a name="Params"></a>
 
@@ -153,6 +157,21 @@ An object containing optional named parameters.
 | typeName | <code>string</code> \| <code>undefined</code> | a string specifying the feature type within its namespace. See [09-025r2 § 7.9.2.4.1](http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#90). |
 | schemaLocations | <code>Object</code> \| <code>undefined</code> | an object mapping uri to schema locations |
 | nsAssignments | <code>Object</code> \| <code>undefined</code> | an object mapping ns to uri |
+
+<a name="TransactionParams"></a>
+
+## TransactionParams : <code>Object</code>
+An object containing optional named parameters for a transaction in addition
+to parameters used elsewhere.
+
+**Kind**: global typedef  
+**Extends**: [<code>Params</code>](#Params)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| lockId | <code>string</code> \| <code>undefined</code> | lockId parameter, as specified at [OGC 09-025r2 § 15.2.3.1.2](http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#277). |
+| releaseAction | <code>string</code> \| <code>undefined</code> | releaseAction parameter, as specified at [OGC 09-025r2 § 15.2.3.2](http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#278). |
 
 <a name="Feature"></a>
 
