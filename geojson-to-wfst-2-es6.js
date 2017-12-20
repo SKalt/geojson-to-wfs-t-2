@@ -1,4 +1,5 @@
 import {geomToGml as gml3} from 'geojson-to-gml-3';
+import 'core-js/fn/object/entries';
 
 /**
  * A namespace for xml utilities.
