@@ -4,6 +4,7 @@ const formatXml = require('./formatXml.js');
 const wfs = require('../geojson-to-wfst-2-cjs');
 const {testCases, feature} = require('./featureExamples.js'); // in separate
 // module since the fixtures are many lines of code.
+const assert = require('assert');
 
 function isValidWfst(xml){
   return new Promise(function(res, rej){
@@ -54,7 +55,7 @@ const tests = (testCaseId, ...actions) => actions.forEach(
 //   'feature array',
 //   'featureCollection',
 //   'whitelist' ]
-
+/*
 describe('Generation of valid WFS-T-2.0.0', function(){
   // it('exists / is visible', function(){
   //   console.log(formatXml(wfs.Insert(feature)), '\n-------------------');
@@ -109,3 +110,234 @@ test = (testCaseId, action, note) => { // TODO: anti-tests.
     );
 };
 describe('Appropriate throwing of errors', function(){});
+*/
+describe('Handles falsy values correctly.', () => {
+  describe('empty string value', () => {
+    it('Insert', () => {
+      const testFeature = Object.assign({}, feature);
+      testFeature.properties = Object.assign({}, feature.properties, {
+        emptystring: ''
+      });
+
+      const insert = wfs.Insert(testFeature);
+      const xml = wfs.Transaction([insert], {
+        nsAssignments: {
+          topp: 'http://www.openplans.org/topp'
+        }
+      });
+
+      const match = xml.match(/<topp:emptystring><\/topp:emptystring>/);
+
+      assert.notEqual(match, null, 'An xml match must be found for emptystring');
+    });
+
+    it('Update', () => {
+      const testFeature = Object.assign({}, feature, {geometry_name: undefined});
+
+      const update = wfs.Update(testFeature, {
+        properties: {
+          emptystring: ''
+        }
+      });
+      const xml = wfs.Transaction([update], {
+        nsAssignments: {
+          topp: 'http://www.openplans.org/topp'
+        }
+      });
+
+      const match = xml.match(/<wfs:ValueReference>modifiedby<\/wfs:ValueReference><wfs:Value \/>/);
+
+      assert.notEqual(match, null, 'An xml match must be found for emptystring');
+    });
+  });
+
+  describe('false value', () => {
+    it('Insert', () => {
+      const testFeature = Object.assign({}, feature);
+      testFeature.properties = Object.assign({}, feature.properties, {
+        falsevalue: false
+      });
+
+      const insert = wfs.Insert(testFeature);
+      const xml = wfs.Transaction([insert], {
+        nsAssignments: {
+          topp: 'http://www.openplans.org/topp'
+        }
+      });
+
+      const match = xml.match(/<topp:falsevalue>false<\/topp:falsevalue>/);
+
+      assert.notEqual(match, null, 'An xml match must be found for falsevalue');
+    });
+
+    it('Update', () => {
+      const testFeature = Object.assign({}, feature, {geometry_name: undefined});
+
+      const update = wfs.Update(testFeature, {
+        properties: {
+          falsevalue: false
+        }
+      });
+      const xml = wfs.Transaction([update], {
+        nsAssignments: {
+          topp: 'http://www.openplans.org/topp'
+        }
+      });
+
+      const match = xml.match(/<wfs:ValueReference>falsevalue<\/wfs:ValueReference><wfs:Value>false<\/wfs:Value>/);
+
+      assert.notEqual(match, null, 'An xml match must be found for emptystring');
+    });
+  });
+
+  describe('0 value', () => {
+    it('Insert', () => {
+      const testFeature = Object.assign({}, feature);
+      testFeature.properties = Object.assign({}, feature.properties, {
+        zero: 0
+      });
+
+      const insert = wfs.Insert(testFeature);
+      const xml = wfs.Transaction([insert], {
+        nsAssignments: {
+          topp: 'http://www.openplans.org/topp'
+        }
+      });
+
+      const match = xml.match(/<topp:zero>0<\/topp:zero>/);
+
+      assert.notEqual(match, null, 'An xml match must be found for zero');
+    });
+
+    it('Update', () => {
+      const testFeature = Object.assign({}, feature, {geometry_name: undefined});
+
+      const update = wfs.Update(testFeature, {
+        properties: {
+          zero: 0
+        }
+      });
+      const xml = wfs.Transaction([update], {
+        nsAssignments: {
+          topp: 'http://www.openplans.org/topp'
+        }
+      });
+
+      const match = xml.match(/<wfs:ValueReference>zero<\/wfs:ValueReference><wfs:Value>0<\/wfs:Value>/);
+
+      assert.notEqual(match, null, 'An xml match must be found for zero');
+    });
+  });
+
+  describe('null value', () => {
+    // xsi:nil="true"
+    it('Insert', () => {
+      const testFeature = Object.assign({}, feature);
+      testFeature.properties = Object.assign({}, feature.properties, {
+        nullvalue: null
+      });
+
+      const insert = wfs.Insert(testFeature);
+      const xml = wfs.Transaction([insert], {
+        nsAssignments: {
+          topp: 'http://www.openplans.org/topp'
+        }
+      });
+
+      const match = xml.match(/topp:nullvalue/);
+
+      assert.equal(match, null, 'Null values should not appear in an Insert');
+    });
+
+    it('Update', () => {
+      const testFeature = Object.assign({}, feature, {geometry_name: undefined});
+
+      const update = wfs.Update(testFeature, {
+        properties: {
+          nullvalue: null
+        }
+      });
+      const xml = wfs.Transaction([update], {
+        nsAssignments: {
+          topp: 'http://www.openplans.org/topp'
+        }
+      });
+
+      const match = xml.match(/<wfs:ValueReference>nullvalue<\/wfs:ValueReference><wfs:Value nil="true" \/>/);
+
+      assert.notEqual(match, null, 'An xml match must be found for nullvalue');
+    });
+  });
+
+  describe('undefined value', () => {
+    it('Insert', () => {
+      const testFeature = Object.assign({}, feature);
+      testFeature.properties = Object.assign({}, feature.properties, {
+        undefinedvalue: undefined
+      });
+
+      const insert = wfs.Insert(testFeature);
+      const xml = wfs.Transaction([insert], {
+        nsAssignments: {
+          topp: 'http://www.openplans.org/topp'
+        }
+      });
+
+      const match = xml.match(/topp:undefinedvalue/);
+
+      assert.equal(match, null, 'Undefined values should not appear in an Insert');
+    });
+
+    it('Update', () => {
+      const testFeature = Object.assign({}, feature, {geometry_name: undefined});
+
+      const update = wfs.Update(testFeature, {
+        properties: {
+          undefinedvalue: undefined
+        }
+      });
+      const xml = wfs.Transaction([update], {
+        nsAssignments: {
+          topp: 'http://www.openplans.org/topp'
+        }
+      });
+
+      const match = xml.match(/undefinedvalue/);
+
+      assert.equal(match, null, 'Undefined values should not appear in an Update');
+    });
+  });
+
+  describe('NaN value', () => {
+    it('Insert', () => {
+      const testFeature = Object.assign({}, feature);
+      testFeature.properties = Object.assign({}, feature.properties, {
+        nanvalue: NaN
+      });
+
+      const insert = wfs.Insert(testFeature);
+
+      assert.throws(() => wfs.Transaction([insert], {
+        nsAssignments: {
+          topp: 'http://www.openplans.org/topp'
+        }
+      }), 'NaN in an Insert should throw.');
+    });
+
+    it('Update', () => {
+      const testFeature = Object.assign({}, feature, {geometry_name: undefined});
+
+      const update = wfs.Update(testFeature, {
+        properties: {
+          nanvalue: NaN
+        }
+      });
+
+      assert.throws(() => wfs.Transaction([update], {
+        nsAssignments: {
+          topp: 'http://www.openplans.org/topp'
+        }
+      }), 'NaN in an Update should throw.');
+    });
+  });
+});
