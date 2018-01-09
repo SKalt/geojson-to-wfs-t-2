@@ -90,14 +90,6 @@ const ensureTypeName = (ns, layer, typeName) =>{
 };
 
 /**
- * Stands in for other functions in swich statements, etc. Does nothing.
- * @private
- * @function
- * @return {undefined} nothng.
- */
-const pass = () => undefined;
-
-/**
  * Iterates over the key-value pairs, filtering by a whitelist if available.
  * @private
  * @function
