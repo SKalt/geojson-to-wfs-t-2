@@ -55,7 +55,6 @@ const tests = (testCaseId, ...actions) => actions.forEach(
 //   'feature array',
 //   'featureCollection',
 //   'whitelist' ]
-/*
 describe('Generation of valid WFS-T-2.0.0', function(){
   // it('exists / is visible', function(){
   //   console.log(formatXml(wfs.Insert(feature)), '\n-------------------');
@@ -110,7 +109,7 @@ test = (testCaseId, action, note) => { // TODO: anti-tests.
     );
 };
 describe('Appropriate throwing of errors', function(){});
-*/
+
 describe('Handles falsy values correctly.', () => {
   describe('empty string value', () => {
     it('Insert', () => {
@@ -145,7 +144,7 @@ describe('Handles falsy values correctly.', () => {
         }
       });
 
-      const match = xml.match(/<wfs:ValueReference>modifiedby<\/wfs:ValueReference><wfs:Value \/>/);
+      const match = xml.match(/<wfs:ValueReference>emptystring<\/wfs:ValueReference><wfs:Value><\/wfs:Value>/);
 
       assert.notEqual(match, null, 'An xml match must be found for emptystring');
     });
@@ -230,7 +229,6 @@ describe('Handles falsy values correctly.', () => {
   });
 
   describe('null value', () => {
-    // xsi:nil="true"
     it('Insert', () => {
       const testFeature = Object.assign({}, feature);
       testFeature.properties = Object.assign({}, feature.properties, {
@@ -244,7 +242,7 @@ describe('Handles falsy values correctly.', () => {
         }
       });
 
-      const match = xml.match(/topp:nullvalue/);
+      const match = xml.match(/nullvalue/);
 
       assert.equal(match, null, 'Null values should not appear in an Insert');
     });
@@ -263,7 +261,7 @@ describe('Handles falsy values correctly.', () => {
         }
       });
 
-      const match = xml.match(/<wfs:ValueReference>nullvalue<\/wfs:ValueReference><wfs:Value nil="true" \/>/);
+      const match = xml.match(/<wfs:ValueReference>nullvalue<\/wfs:ValueReference><wfs:Value xsi:nil="true"><\/wfs:Value>/);
 
       assert.notEqual(match, null, 'An xml match must be found for nullvalue');
     });
@@ -283,7 +281,7 @@ describe('Handles falsy values correctly.', () => {
         }
       });
 
-      const match = xml.match(/topp:undefinedvalue/);
+      const match = xml.match(/undefinedvalue/);
 
       assert.equal(match, null, 'Undefined values should not appear in an Insert');
     });
@@ -315,29 +313,21 @@ describe('Handles falsy values correctly.', () => {
         nanvalue: NaN
       });
 
-      const insert = wfs.Insert(testFeature);
-
-      assert.throws(() => wfs.Transaction([insert], {
-        nsAssignments: {
-          topp: 'http://www.openplans.org/topp'
-        }
-      }), 'NaN in an Insert should throw.');
+      assert.throws(() => wfs.Insert(testFeature),
+      /NaN is not allowed/,
+      'NaN in an Insert should throw.');
     });
 
     it('Update', () => {
       const testFeature = Object.assign({}, feature, {geometry_name: undefined});
 
-      const update = wfs.Update(testFeature, {
+      assert.throws(() => wfs.Update(testFeature, {
         properties: {
           nanvalue: NaN
         }
-      });
-
-      assert.throws(() => wfs.Transaction([update], {
-        nsAssignments: {
-          topp: 'http://www.openplans.org/topp'
-        }
-      }), 'NaN in an Update should throw.');
+      }),
+      /NaN is not allowed/,
+      'NaN in an Update should throw.');
     });
   });
 });
