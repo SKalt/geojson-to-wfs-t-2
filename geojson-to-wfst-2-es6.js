@@ -90,14 +90,6 @@ const ensureTypeName = (ns, layer, typeName) =>{
 };
 
 /**
- * Stands in for other functions in swich statements, etc. Does nothing.
- * @private
- * @function
- * @return {undefined} nothng.
- */
-const pass = () => undefined;
-
-/**
  * Iterates over the key-value pairs, filtering by a whitelist if available.
  * @private
  * @function
@@ -106,8 +98,14 @@ const pass = () => undefined;
  * @param {Function} cb a function to call on each (whitelisted key, value) pair
  */
 const useWhitelistIfAvailable = (whitelist, properties, cb) =>{
-  for (let prop of whitelist || Object.keys(properties)){
-    properties[prop] ? cb(prop, properties[prop]) : pass();
+  for (let prop of whitelist || Object.keys(properties)) {
+    const val = properties[prop];
+    if (Number.isNaN(val)) {
+      throw new Error('NaN is not allowed.');
+    }
+    if (val !== undefined) {
+      cb(prop, val);
+    }
   }
 };
 /**
@@ -277,7 +275,12 @@ function translateFeatures(features, params={}) {
     }
     useWhitelistIfAvailable(
       whitelist, properties,
-      (prop, val)=>fields += xml.tag(ns, prop, {}, properties[prop])
+      (prop, val)=> {
+        if (val === null) {
+          return fields;
+        }
+        return fields += xml.tag(ns, prop, {}, properties[prop]);
+      }
     );
     inner += xml.tag(ns, layer, {'gml:id': ensureId(layer, id)}, fields);
   }
@@ -329,11 +332,17 @@ function Update(features, params={}) {
    * default action, 'replace', is sufficient.
    * @return {string} a wfs:Property(wfs:ValueReference) pair.
    */
-  const makeKvp = (prop, val, action) => wfs(
-    'Property', {},
-    wfs('ValueReference', {action}, prop) +
-      (val !== undefined ? wfs('Value', {}, val): '')
-  );
+  const makeKvp = (prop, val, action) => {
+    let value = '';
+    if (val === null) {
+      value = wfs('Value', {'xsi:nil': true}, '');
+    } else if (val !== undefined) {
+      value = wfs('Value', {}, val);
+    }
+
+    return wfs('Property', {}, wfs('ValueReference', {action}, prop) + value);
+  };
+
   if (params.properties) {
     let {/* handle, */inputFormat, filter, typeName, whitelist} = params;
     let {srsName, ns, layer, geometry_name} = unpack(
