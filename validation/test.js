@@ -1,7 +1,7 @@
 const validate = require('xsd-schema-validator').validateXML;
 const formatXml = require('./formatXml.js');
 // const wfs = require('../geojsonToWfst.js');
-const wfs = require('../geojson-to-wfst-2-cjs');
+const wfs = require('../dist/es6.common.js');
 const {testCases, feature} = require('./featureExamples.js'); // in separate
 // module since the fixtures are many lines of code.
 const assert = require('assert');

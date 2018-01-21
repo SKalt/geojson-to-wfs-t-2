@@ -2,8 +2,8 @@
   "name": "geojson-to-wfs-t-2",
   "version": "1.2.0",
   "description": "A library to convert geojson features to WFS-T-2.0 xml strings.",
-  "main": "geojson-to-wfst-2-cjs.js",
-  "module": "geojson-to-wfst-2-es6.js",
+  "main": "es6.common.js",
+  "module": "src/index.js",
   "scripts": {
     "build": "rollup -c",
     "test": "cd validation; mocha --timeout 60000",

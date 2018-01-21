@@ -6,27 +6,27 @@ import replace from 'rollup-plugin-replace';
 import uglify from 'rollup-plugin-uglify';
 
 export default {
-  entry: 'geojson-to-wfst-2-es6.js',
-  dest: 'geojson-to-wfst-2-cjs.js',
+  entry: 'src/index.js',
+  dest: 'dist/es6.common.js',
   format: 'cjs',
   plugins: [
     resolve({
       jsnext: true,
       main: true,
-      browser: true,
+      browser: true
     }),
     commonjs(),
     eslint({
       exclude: [
-        'src/styles/**',
+        'src/styles/**'
       ]
     }),
     babel({
-      exclude: 'node_modules/**',
+      exclude: 'node_modules/**'
     }),
     replace({
-      ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
+      ENV: JSON.stringify(process.env.NODE_ENV || 'development')
     }),
-    (process.env.NODE_ENV === 'production' && uglify()),
-  ],
+    (process.env.NODE_ENV === 'production' && uglify())
+  ]
 };
