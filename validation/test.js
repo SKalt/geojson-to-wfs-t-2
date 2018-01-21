@@ -6,8 +6,8 @@ const {testCases, feature} = require('./featureExamples.js'); // in separate
 // module since the fixtures are many lines of code.
 const assert = require('assert');
 
-function isValidWfst(xml){
-  return new Promise(function(res, rej){
+const isValidWfst = (xml) => {
+  return new Promise(function(res, rej) {
     validate(xml, './fixtures/mock_schema.xsd', (err, result) => {
       if (err) rej(err);
       res(result);
@@ -16,7 +16,7 @@ function isValidWfst(xml){
     console.log(formatXml(xml));
     throw err;
   });
-}
+};
 const tempId = (()=>{
   let counter = 1;
   return ()=>{
@@ -27,21 +27,24 @@ const tempId = (()=>{
 
 let test = (testCaseId, action, note) =>{ // TODO: anti-tests.
   it(`${testCaseId} : ${action}; ${note || ''}`,
-     function(){
-       const [feature, params] = testCases[testCaseId];
-       let xml = wfs.Transaction(
-	 wfs[action](feature, params),
-	 {
-	   nsAssignments:{
-    	     topp:'http://www.openplans.org/topp'
-	   },
-	   schemaLocations:{}
-	 }
-       );
-       xml = xml.replace(/<gml:(MultiCurve|LineString)/g, (match)=>`${match + tempId()}`);
-       return isValidWfst(xml);
-     }
-    );
+    function() {
+      const [feature, params] = testCases[testCaseId];
+      let xml = wfs.Transaction(
+        wfs[action](feature, params),
+        {
+          nsAssignments: {
+            topp: 'http://www.openplans.org/topp'
+          },
+          schemaLocations: {}
+        }
+      );
+      xml = xml.replace(
+        /<gml:(MultiCurve|LineString)/g,
+        (match)=>`${match + tempId()}`
+      );
+      return isValidWfst(xml);
+    }
+  );
 };
 const tests = (testCaseId, ...actions) => actions.forEach(
   (action) => test(testCaseId, action)
@@ -55,60 +58,65 @@ const tests = (testCaseId, ...actions) => actions.forEach(
 //   'feature array',
 //   'featureCollection',
 //   'whitelist' ]
-describe('Generation of valid WFS-T-2.0.0', function(){
+describe('Generation of valid WFS-T-2.0.0', function() {
   // it('exists / is visible', function(){
   //   console.log(formatXml(wfs.Insert(feature)), '\n-------------------');
   //   console.log(formatXml(wfs.Update(feature)), '\n-------------------');
   //   console.log(formatXml(wfs.Delete(feature, {ns:'topp'})), '\n-------------------');
   //   console.log(formatXml(wfs.Transaction(wfs.Delete(feature), {
   //     nsAssignments:{
-  // 	topp:'http://www.openplans.org/topp'
+  //   topp:'http://www.openplans.org/topp'
   //     },
   //     schemaLocations:{}
   //   })), '\n-------------------');
   // });
-  //for (let testCase in testCases){
-  let testCase = "complete feature, empty params";
+  // for (let testCase in testCases){
+  let testCase = 'complete feature, empty params';
   tests('complete feature, empty params',
-	'Insert', 'Replace', 'Delete');
+    'Insert', 'Replace', 'Delete');
   tests('complete feature, undefined params',
-	'Insert', 'Replace', 'Update', 'Delete');
+    'Insert', 'Replace', 'Update', 'Delete');
   tests('separated layer, id number',
-	'Insert', 'Replace','Update', 'Delete');
+    'Insert', 'Replace', 'Update', 'Delete');
   tests('layer override',
-       	'Insert', 'Replace','Update', 'Delete');
+         'Insert', 'Replace', 'Update', 'Delete');
   tests('parameter override',
-	'Insert', 'Replace','Update', 'Delete');
+    'Insert', 'Replace', 'Update', 'Delete');
   tests('feature array',
- 	'Insert', 'Replace','Update', 'Delete');
+    'Insert', 'Replace', 'Update', 'Delete');
   tests('featureCollection',
-	'Insert', 'Replace','Update', 'Delete');
+    'Insert', 'Replace', 'Update', 'Delete');
   tests('whitelist',
-	'Insert', 'Update', 'Replace');
+    'Insert', 'Update', 'Replace');
   tests('update error feature',
-	'Insert', 'Update', 'Replace', 'Delete');
+    'Insert', 'Update', 'Replace', 'Delete');
 });
 test = (testCaseId, action, note) => { // TODO: anti-tests.
   it(`${testCaseId} : ${action}; ${note || ''}`,
-     function(){
-       const [feature, params] = testCases[testCaseId];
-       let xml = wfs.Transaction(
-	 wfs[action](feature, params),
-	 {
-	   nsAssignments:{
-    	     topp:'http://www.openplans.org/topp'
-	   },
-	   schemaLocations:{}
-	 }
-       );
-       xml = xml.replace(/<gml:(MultiCurve|LineString)/g, (match)=>`${match + tempId()}`);
-       return isValidWfst(xml)
-	 .catch(()=>true)
-	 .then(()=>{throw new Error('should have thrown an error');});
-     }
-    );
+    function() {
+      const [feature, params] = testCases[testCaseId];
+      let xml = wfs.Transaction(
+        wfs[action](feature, params),
+        {
+          nsAssignments: {
+            topp: 'http://www.openplans.org/topp'
+          },
+          schemaLocations: {}
+        }
+      );
+      xml = xml.replace(
+        /<gml:(MultiCurve|LineString)/g,
+        (match)=>`${match + tempId()}`
+      );
+      return isValidWfst(xml)
+        .catch(()=>true)
+        .then(()=>{
+          throw new Error('should have thrown an error');
+        });
+    }
+  );
 };
-describe('Appropriate throwing of errors', function(){});
+describe('Appropriate throwing of errors', function() {});
 
 describe('Handles falsy values correctly.', () => {
   describe('empty string value', () => {
@@ -314,8 +322,8 @@ describe('Handles falsy values correctly.', () => {
       });
 
       assert.throws(() => wfs.Insert(testFeature),
-      /NaN is not allowed/,
-      'NaN in an Insert should throw.');
+        /NaN is not allowed/,
+        'NaN in an Insert should throw.');
     });
 
     it('Update', () => {

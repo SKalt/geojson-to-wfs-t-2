@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+// some snake_case variables are used to imitate gml's notation.
 import {geomToGml as gml3} from 'geojson-to-gml-3';
 import 'core-js/fn/object/entries';
 
@@ -62,7 +64,7 @@ const wfs = (tagName, attrs, inner) => xml.tag('wfs', tagName, attrs, inner);
  * @return {Feature[]}
  */
 const ensureArray = (...maybe)=> (maybe[0].features || [].concat(...maybe))
-	.filter((f) => f);
+  .filter((f) => f);
 /**
  * Ensures a layer.id format of an input id.
  * @private
@@ -83,8 +85,10 @@ const ensureId = (lyr, id) => /\./.exec(id || '') ? id :`${lyr}.${id}`;
  * @throws {Error} if typeName it cannot form a typeName from ns and layer
  */
 const ensureTypeName = (ns, layer, typeName) =>{
-  if (!typeName && !(ns && layer)){
-    throw new Error(`no typename possible: ${JSON.stringify({typeName, ns, layer})}`);
+  if (!typeName && !(ns && layer)) {
+    throw new Error(`no typename possible: ${
+      JSON.stringify({typeName, ns, layer}, null, 2)
+    }`);
   }
   return typeName || `${ns}:${layer}Type`;
 };
@@ -262,7 +266,7 @@ function translateFeatures(features, params={}) {
   let inner = '';
   let {srsName} = params;
   for (let feature of features) {
-    //TODO: add whitelist support
+    // TODO: add whitelist support
     let {ns, layer, geometry_name, properties, id, whitelist} = unpack(
       feature, params, 'ns', 'layer', 'geometry_name', 'properties', 'id',
       'whitelist'
@@ -369,7 +373,7 @@ function Update(features, params={}) {
     // encapsulate each update in its own Update tag
     return features.map(
       (f) => Update(
-        f, Object.assign({}, params, {properties:f.properties})
+        f, Object.assign({}, params, {properties: f.properties})
       )
     ).join('');
   }
@@ -432,10 +436,10 @@ function Transaction(actions, params={}) {
   const transactionParams = ['srsName', 'lockId', 'releaseAction', 'handle'];
   let {
     /* srsName, lockId, releaseAction, handle, inputFormat, */ version, // optional
-    nsAssignments = {} /*, schemaLocations*/ // required
+    nsAssignments = {} /* , schemaLocations*/ // required
   } = params;
   // let converter = {Insert, Update, Delete};
-  let {insert:toInsert, update:toUpdate, delete:toDelete} = actions || {};
+  let {insert: toInsert, update: toUpdate, delete: toDelete} = actions || {};
   let finalActions = ''; // processedActions would be more accurate
 
   if (Array.isArray(actions) && actions.every((v) => typeof(v) == 'string')) {
@@ -477,10 +481,10 @@ function generateNsAssignments(nsAssignments, xml) {
     makeNsAssignment(ns, nsAssignments[ns]);
   }
   // check all ns's assigned
-  var re = /(<|typeName=")(\w+):/g;
-  var arr;
-  var allNamespaces = new Set();
-  while ((arr = re.exec(xml)) !== null){
+  let re = /(<|typeName=")(\w+):/g;
+  let arr;
+  let allNamespaces = new Set();
+  while ((arr = re.exec(xml)) !== null) {
     allNamespaces.add(arr[2]);
   }
   if (allNamespaces.has('fes')) {
@@ -494,7 +498,7 @@ function generateNsAssignments(nsAssignments, xml) {
     if (!attrs['xmlns:' + ns]) {
       throw new Error(`unassigned namespace ${ns}`);
     }
-  }/*, schemaLocations*/
+  }/* , schemaLocations*/
   return attrs;
 }
 
