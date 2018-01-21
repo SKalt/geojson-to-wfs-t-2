@@ -1,6 +1,8 @@
 language: node_js
 node_js:
 - node
+before_deploy:
+  - touch .npmignore # make dist/ files visible
 deploy:
   skip_cleanup: true
   provider: npm
