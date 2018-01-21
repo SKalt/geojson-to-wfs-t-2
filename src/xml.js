@@ -27,10 +27,9 @@ export function attrs(attrs) {
  * @param {string} inner inner xml.
  * @return {string} an xml string.
  */
-export function tag(ns, tagName, attrs, inner) { // TODO: self-closing
   let tag = (ns ? `${ns}:` : '') + tagName;
   if (tagName) {
-    return `<${tag}${attrs(attrs)}>${inner}</${tag}>`;
+    return `<${tag}${attrs(attrs)}${inner ? `>${inner}</${tag}` : ' /' }>`;
   } else {
     throw new Error(
       'no tag supplied ' + JSON.stringify({ns, tagName, attrs, inner}, null, 2)
