@@ -1,3 +1,13 @@
 language: node_js
 node_js:
-  - node
+- node
+deploy:
+  skip_cleanup: true
+  provider: npm
+  email: kalt.steven@gmail.com
+  api_key:
+    secure: KyUmTE7BY8CaKSEhsEWwagfyp7L2F7lzTGVRNlhiXsKqTYz75MK0fCN3T6OERnnKeNGHBH94SAeSOC0vPM3p0SfsPh0saEZgGnKyDMP3XnbfWAN+9fg4Cdr+QXeNMzRmTkl0RtUg8xVJpLoSj3htB8O2vSdfRMTPDIwlizuxAi2DgrksNWRvGHCcw6h9M4bAG5sTrH00U5E3RrTl4h00eCGnRWmX0QA7x04C4V64KfHmaz66C9tA/B4/GLcP3zoP/uceW08Uqu9m7SBWYc2JlMTwK9/2DNfVu7RGl/IoT7DXJirsQPIJ95ZdFVnb+98wTq+LzPZ4ePVCJbiCmEoJ4gNIwl0CW4rxA30bmCWdt8aO7SF5Byk8I9eR/nTLE6DRlSSy//XS3q55ZMZwGgA9V7Bf1bZajnTxl1I5v7wvN29xeX+k2iSRWxitb/1dqxtOKfrveDpDa9z326ES48zI15u2B6/pgXCsR0Ozgwb6dHyNG2VQ2t+DRETY2nszzUNfKCgQ0gS5KoLZsxKNPKtoryrUyCmTTwiNrjDhduvCVlEtaApF6D74pwdBYl6M/MbyAF2fjLyo78mN73gzwi2OFah18w5duHtTBX7DqE58kMO5JUckoh5LoHpuwhnZmDiQwuxlhN+dVfpNpWr7dvBnD8UHEwx8EMHAT6jws0NUWtI=
+  on:
+    branch: master
+    tags: true
+    repo: SKalt/geojson-to-wfs-t-2
