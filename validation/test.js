@@ -1,3 +1,4 @@
+/* eslint-disable new-cap*/
 const validate = require('xsd-schema-validator').validateXML;
 const formatXml = require('./formatXml.js');
 // const wfs = require('../geojsonToWfst.js');
@@ -62,7 +63,8 @@ describe('Generation of valid WFS-T-2.0.0', function() {
   // it('exists / is visible', function(){
   //   console.log(formatXml(wfs.Insert(feature)), '\n-------------------');
   //   console.log(formatXml(wfs.Update(feature)), '\n-------------------');
-  //   console.log(formatXml(wfs.Delete(feature, {ns:'topp'})), '\n-------------------');
+  //   console.log(
+  //   formatXml(wfs.Delete(feature, {ns:'topp'})), '\n-------------------');
   //   console.log(formatXml(wfs.Transaction(wfs.Delete(feature), {
   //     nsAssignments:{
   //   topp:'http://www.openplans.org/topp'
@@ -71,7 +73,7 @@ describe('Generation of valid WFS-T-2.0.0', function() {
   //   })), '\n-------------------');
   // });
   // for (let testCase in testCases){
-  let testCase = 'complete feature, empty params';
+  // let testCase = 'complete feature, empty params';
   tests('complete feature, empty params',
     'Insert', 'Replace', 'Delete');
   tests('complete feature, undefined params',
@@ -79,7 +81,7 @@ describe('Generation of valid WFS-T-2.0.0', function() {
   tests('separated layer, id number',
     'Insert', 'Replace', 'Update', 'Delete');
   tests('layer override',
-         'Insert', 'Replace', 'Update', 'Delete');
+    'Insert', 'Replace', 'Update', 'Delete');
   tests('parameter override',
     'Insert', 'Replace', 'Update', 'Delete');
   tests('feature array',
@@ -135,11 +137,15 @@ describe('Handles falsy values correctly.', () => {
 
       const match = xml.match(/<topp:emptystring><\/topp:emptystring>/);
 
-      assert.notEqual(match, null, 'An xml match must be found for emptystring');
+      assert.notEqual(
+        match, null,
+        'An xml match must be found for emptystring');
     });
 
     it('Update', () => {
-      const testFeature = Object.assign({}, feature, {geometry_name: undefined});
+      const testFeature = Object.assign(
+        {}, feature, {geometry_name: undefined}
+      );
 
       const update = wfs.Update(testFeature, {
         properties: {
@@ -151,7 +157,7 @@ describe('Handles falsy values correctly.', () => {
           topp: 'http://www.openplans.org/topp'
         }
       });
-
+      /* eslint-disable max-len */
       const match = xml.match(/<wfs:ValueReference>emptystring<\/wfs:ValueReference><wfs:Value><\/wfs:Value>/);
 
       assert.notEqual(match, null, 'An xml match must be found for emptystring');
@@ -310,7 +316,9 @@ describe('Handles falsy values correctly.', () => {
 
       const match = xml.match(/undefinedvalue/);
 
-      assert.equal(match, null, 'Undefined values should not appear in an Update');
+      assert.equal(
+        match, null, 'Undefined values should not appear in an Update'
+      );
     });
   });
 
@@ -327,7 +335,9 @@ describe('Handles falsy values correctly.', () => {
     });
 
     it('Update', () => {
-      const testFeature = Object.assign({}, feature, {geometry_name: undefined});
+      const testFeature = Object.assign(
+        {}, feature, {geometry_name: undefined}
+      );
 
       assert.throws(() => wfs.Update(testFeature, {
         properties: {
