@@ -1,7 +1,11 @@
 /* eslint-disable camelcase */
 /**
+ * Common utilities for handling parameters for creation of WFS trasactions.
+ * @module utils
+ */
+
+/**
  * Iterates over the key-value pairs, filtering by a whitelist if available.
- * @private
  * @function
  * @param {Array<String>} whitelist a whitelist of property names
  * @param {Object} properties an object mapping property names to values
@@ -55,7 +59,6 @@ export function unpack(feature, params, ...args) {
 /**
  * Generates an object to be passed to @see xml.attrs xmlns:ns="uri" definitions
  * for a wfs:Transaction
- * @private
  * @param {Object} nsAssignments @see Params.nsAssignments
  * @param {String} xml arbitrary xml.
  * @return {Object} an object mapping each ns to its URI as 'xmlns:ns' : 'URI'.
@@ -93,7 +96,6 @@ export function generateNsAssignments(nsAssignments, xml) {
 /**
  * Returns a string alternating uri, whitespace, and the uri's schema's
  * location.
- * @private
  * @param {Object} schemaLocations an object mapping uri:schemalocation
  * @return {string} a string that is a valid xsi:schemaLocation value.
  */

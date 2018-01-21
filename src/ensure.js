@@ -15,7 +15,6 @@ export const array = (...maybe)=> (maybe[0].features || [].concat(...maybe))
   .filter((f) => f);
 /**
  * Ensures a layer.id format of an input id.
- * @private
  * @function
  * @param {String} lyr layer name
  * @param {String} id id, possibly already in correct layer.id format.
@@ -24,7 +23,6 @@ export const array = (...maybe)=> (maybe[0].features || [].concat(...maybe))
 export const id = (lyr, id) => /\./.exec(id || '') ? id :`${lyr}.${id}`;
 /**
  * return a correctly-formatted typeName
- * @private
  * @function
  * @param {String} ns namespace
  * @param {String} layer layer name
@@ -43,7 +41,6 @@ export const typeName = (ns, layer, typeName) =>{
 
 /**
  * Builds a filter from feature ids if one is not already input.
- * @private
  * @function
  * @param {?String} filter a possible string filter
  * @param {Array<Object>} features an array of geojson feature objects
@@ -66,12 +63,11 @@ export function filter(filter, features, params) {
 // http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#286
 /**
  * Checks the type of the input action
- * @private
  * @function
  * @param {?String} action
  * @return {Boolean} whether the action is allowed
 */
-export const action = (()=>{
-  const allowed = new Set(['replace', 'insertBefore', 'insertAfter', 'remove']);
-  return (action) => allowed.has(action);
-})();
+const allowedActions = new Set([
+  'replace', 'insertBefore', 'insertAfter', 'remove'
+]);
+export const action = (action) => allowedActions.has(action);
