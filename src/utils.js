@@ -120,7 +120,7 @@ export function generateSchemaLines(schemaLocations={}) {
  */
 export function translateFeatures(features, params={}) {
   let inner = '';
-  let {srsName} = params;
+  let {srsName, srsDimension} = params;
   for (let feature of features) {
     // TODO: add whitelist support
     let {ns, layer, geometry_name, properties, id, whitelist} = unpack(
@@ -130,7 +130,7 @@ export function translateFeatures(features, params={}) {
     let fields = '';
     if (geometry_name) {
       fields += xml.tag(
-        ns, geometry_name, {}, gml3(feature.geometry, '', {srsName})
+        ns, geometry_name, {}, gml3(feature.geometry, '', {srsName, srsDimension})
       );
     }
     useWhitelistIfAvailable(
