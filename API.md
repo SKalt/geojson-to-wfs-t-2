@@ -294,8 +294,9 @@ xml utilities.
 * [xml](#module_xml)
     * [.wfs](#module_xml.wfs) ⇒ <code>String</code>
     * [.attrs(attrs)](#module_xml.attrs) ⇒ <code>String</code>
-    * [.tag(ns, tagName, attrs, inner)](#module_xml.tag) ⇒ <code>String</code>
+    * [.tag(ns, tagName, attrsObj, inner)](#module_xml.tag) ⇒ <code>String</code>
     * [.idFilter(lyr, id)](#module_xml.idFilter) ⇒ <code>String</code>
+    * [.escape(input)](#module_xml.escape) ⇒ <code>String</code>
 
 <a name="module_xml.wfs"></a>
 
@@ -308,7 +309,7 @@ Shorthand for creating a wfs xml tag.
 | Param | Type | Description |
 | --- | --- | --- |
 | tagName | <code>String</code> | a valid wfs tag name. |
-| attrs | <code>Object</code> | @see xml.attrs. |
+| attrsObj | <code>Object</code> | @see xml.attrs. |
 | inner | <code>String</code> | @see xml.tag. |
 
 <a name="module_xml.attrs"></a>
@@ -325,7 +326,7 @@ Turns an object into a string of xml attribute key-value pairs.
 
 <a name="module_xml.tag"></a>
 
-### xml.tag(ns, tagName, attrs, inner) ⇒ <code>String</code>
+### xml.tag(ns, tagName, attrsObj, inner) ⇒ <code>String</code>
 Creates a string xml tag.
 
 **Kind**: static method of [<code>xml</code>](#module_xml)  
@@ -335,7 +336,7 @@ Creates a string xml tag.
 | --- | --- | --- |
 | ns | <code>String</code> | the tag's xml namespace abbreviation. |
 | tagName | <code>String</code> | the tag name. |
-| attrs | <code>Object</code> | @see xml.attrs. |
+| attrsObj | <code>Object</code> | @see xml.attrs. |
 | inner | <code>String</code> | inner xml. |
 
 <a name="module_xml.idFilter"></a>
@@ -350,6 +351,18 @@ Creates a fes:ResourceId filter from a layername and id
 | --- | --- | --- |
 | lyr | <code>String</code> | layer name of the filtered feature |
 | id | <code>String</code> | feature id |
+
+<a name="module_xml.escape"></a>
+
+### xml.escape(input) ⇒ <code>String</code>
+Creates an xml-safe string from a given input string
+
+**Kind**: static method of [<code>xml</code>](#module_xml)  
+**Returns**: <code>String</code> - XML-safe string  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| input | <code>String</code> | String to escape |
 
 <a name="Params"></a>
 

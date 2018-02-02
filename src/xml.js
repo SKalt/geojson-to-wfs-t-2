@@ -1,3 +1,4 @@
+import * as ensure from './ensure';
 /**
  * xml utilities.
  * @module xml
@@ -11,7 +12,7 @@
  */
 export function attrs(attrs) {
   return Object.keys(attrs)
-    .map((a) => attrs[a] ? ` ${a}="${attrs[a]}"` : '')
+    .map((a) => attrs[a] ? ` ${a}="${ escape(attrs[a]) }"` : '')
     .join('');
 }
 
@@ -20,17 +21,17 @@ export function attrs(attrs) {
  * @function
  * @param {String} ns the tag's xml namespace abbreviation.
  * @param {String} tagName the tag name.
- * @param {Object} attrs @see xml.attrs.
+ * @param {Object} attrsObj @see xml.attrs.
  * @param {String} inner inner xml.
  * @return {String} an xml string.
  */
-export function tag(ns, tagName, attrs, inner) {
+export function tag(ns, tagName, attrsObj, inner) {
   let tag = (ns ? `${ns}:` : '') + tagName;
   if (tagName) {
-    return `<${tag}${attrs(attrs)}${inner ? `>${inner}</${tag}` : ' /' }>`;
+    return `<${tag}${attrs(attrsObj)}${inner !== null ? `>${inner}</${tag}` : ' /' }>`;
   } else {
-    throw new Error(
-      'no tag supplied ' + JSON.stringify({ns, tagName, attrs, inner}, null, 2)
+    throw new Error('no tag supplied ' +
+      JSON.stringify({ns, tagName, attrsObj, inner}, null, 2)
     );
   }
 };
@@ -38,11 +39,12 @@ export function tag(ns, tagName, attrs, inner) {
 /**
  * Shorthand for creating a wfs xml tag.
  * @param {String} tagName a valid wfs tag name.
- * @param {Object} attrs @see xml.attrs.
+ * @param {Object} attrsObj @see xml.attrs.
  * @param {String} inner @see xml.tag.
  * @return {String} a wfs element.
  */
-export const wfs = (tagName, attrs, inner) => tag('wfs', tagName, attrs, inner);
+export const wfs = (tagName, attrsObj, inner) =>
+  tag('wfs', tagName, attrsObj, inner);
 
 /**
  * Creates a fes:ResourceId filter from a layername and id
@@ -52,5 +54,35 @@ export const wfs = (tagName, attrs, inner) => tag('wfs', tagName, attrs, inner);
  * @return {String} a filter-ecoding of the filter.
  */
 export const idFilter = (lyr, id) => {
-  return `<fes:ResourceId rid="${ensureId(lyr, id)}"/>`;
+  return `<fes:ResourceId rid="${ensure.id(lyr, id)}"/>`;
 };
+
+/**
+ * Creates an xml-safe string from a given input string
+ * @function
+ * @param {String} input String to escape
+ * @return {String} XML-safe string
+ */
+export function escape(input) {
+  if (typeof input !== 'string') {
+    // Backup check for non-strings
+    return input;
+  }
+
+  const output = input.replace(/[<>&'"]/g, (char) => {
+    switch (char) {
+    case '<':
+      return '&lt;';
+    case '>':
+      return '&gt;';
+    case '&':
+      return '&amp;';
+    case `'`:
+      return '&apos;';
+    case '"':
+      return '&quot;';
+    }
+  });
+
+  return output;
+}

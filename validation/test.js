@@ -1,8 +1,8 @@
-/* eslint-disable new-cap*/
+/* eslint new-cap: 0 max-len: 0 */
 const validate = require('xsd-schema-validator').validateXML;
 const formatXml = require('./formatXml.js');
 // const wfs = require('../geojsonToWfst.js');
-const wfs = require('../dist/es6.common.js');
+const wfs = require('../dist/es6.cjs.js');
 const {testCases, feature} = require('./featureExamples.js'); // in separate
 // module since the fixtures are many lines of code.
 const assert = require('assert');
@@ -157,7 +157,6 @@ describe('Handles falsy values correctly.', () => {
           topp: 'http://www.openplans.org/topp'
         }
       });
-      /* eslint-disable max-len */
       const match = xml.match(/<wfs:ValueReference>emptystring<\/wfs:ValueReference><wfs:Value><\/wfs:Value>/);
 
       assert.notEqual(match, null, 'An xml match must be found for emptystring');
@@ -347,5 +346,66 @@ describe('Handles falsy values correctly.', () => {
       /NaN is not allowed/,
       'NaN in an Update should throw.');
     });
+  });
+});
+
+describe('Properly escapes XML special characters.', () => {
+  it('Escapes characters in content.', () => {
+    const testFeature = Object.assign({}, feature);
+    testFeature.properties = Object.assign({}, feature.properties, {
+      xmlescape: `Test < xml > & quotes " and apostrophes ' are escaped`
+    });
+
+    const insert = wfs.Insert(testFeature);
+    const xml = wfs.Transaction([insert], {
+      nsAssignments: {
+        topp: 'http://www.openplans.org/topp'
+      }
+    });
+
+    const match = xml.match(/<topp:xmlescape>Test &lt; xml &gt; &amp; quotes &quot; and apostrophes &apos; are escaped<\/topp:xmlescape>/);
+
+    assert.notEqual(
+      match, null,
+      'An xml match must be found for xmlescape');
+  });
+
+  it('Escapes characters in attributes.', () => {
+    const testFeature = Object.assign({}, feature);
+    testFeature.properties = Object.assign({}, feature.properties);
+
+    const insert = wfs.Insert(testFeature, {inputFormat: `&<>"'`});
+    const xml = wfs.Transaction([insert], {
+      nsAssignments: {
+        topp: 'http://www.openplans.org/topp'
+      }
+    });
+
+    const match = xml.match(/ inputFormat="&amp;&lt;&gt;&quot;&apos;"/);
+
+    assert.notEqual(
+      match, null,
+      'An xml match must be found for xmlescape');
+  });
+
+  it('Escapes characters in Update', () => {
+    const testFeature = Object.assign({}, feature, {geometry_name: undefined});
+
+    const update = wfs.Update(testFeature, {
+      properties: {
+        xmlescape: `Test < xml > & quotes " and apostrophes ' are escaped`
+      }
+    });
+    const xml = wfs.Transaction([update], {
+      nsAssignments: {
+        topp: 'http://www.openplans.org/topp'
+      }
+    });
+
+    const match = xml.match(/<wfs:ValueReference>xmlescape<\/wfs:ValueReference><wfs:Value>Test &lt; xml &gt; &amp; quotes &quot; and apostrophes &apos; are escaped<\/wfs:Value>/);
+
+    assert.notEqual(
+      match, null, 'An xml match must be found for xmlescape'
+    );
   });
 });

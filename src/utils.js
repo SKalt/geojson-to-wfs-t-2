@@ -1,3 +1,8 @@
+import {geomToGml as gml3} from 'geojson-to-gml-3';
+import 'core-js/fn/object/entries';
+import * as xml from './xml';
+import * as ensure from './ensure';
+
 /* eslint-disable camelcase */
 /**
  * Common utilities for handling parameters for creation of WFS trasactions.
@@ -139,7 +144,7 @@ export function translateFeatures(features, params={}) {
         if (val === null) {
           return fields;
         }
-        return fields += xml.tag(ns, prop, {}, properties[prop]);
+        return fields += xml.tag(ns, prop, {}, xml.escape(properties[prop]));
       }
     );
     inner += xml.tag(ns, layer, {'gml:id': ensure.id(layer, id)}, fields);
