@@ -28,7 +28,9 @@ export function attrs(attrs) {
 export function tag(ns, tagName, attrsObj, inner) {
   let tag = (ns ? `${ns}:` : '') + tagName;
   if (tagName) {
-    return `<${tag}${attrs(attrsObj)}${inner !== null ? `>${inner}</${tag}` : ' /' }>`;
+    return `<${tag}${attrs(attrsObj)}${
+      inner !== null ? `>${inner}</${tag}` : ' /'
+    }>`;
   } else {
     throw new Error('no tag supplied ' +
       JSON.stringify({ns, tagName, attrsObj, inner}, null, 2)
