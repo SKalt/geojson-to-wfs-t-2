@@ -5,8 +5,8 @@
  * @module geojsonToWfst
  */
 import {geomToGml as gml3} from 'geojson-to-gml-3';
-import * as ensure from './ensure.js';
-import * as xml from './xml.js';
+import * as ensure from './ensure';
+import * as xml from './xml';
 import {
   generateNsAssignments, translateFeatures, useWhitelistIfAvailable, unpack,
   generateSchemaLines
@@ -81,7 +81,8 @@ export function Update(features, params={}) {
     }
     let fields = '';
     useWhitelistIfAvailable( // TODO: action attr
-      whitelist, params.properties, (k, v) => fields += makeKvp(k, v)
+      whitelist, params.properties, (k, v) =>
+        fields += makeKvp(k, xml.escape(v))
     );
     if (geometry_name) {
       fields += makeKvp(

@@ -1,3 +1,5 @@
+import {unpack} from './utils';
+import {idFilter} from './xml';
 /**
  * common checks, coersions, and informative errors/ warnings
  * @module ensure
