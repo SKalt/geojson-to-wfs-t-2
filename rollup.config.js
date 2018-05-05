@@ -30,7 +30,7 @@ plugins.splice(3, 1, babel({
   presets: [
     ['env', {
       targets: {
-        browser: ['last 2 versions']
+        browser: ['last 2 versions', '> 2%']
       },
       modules: false
     }]
