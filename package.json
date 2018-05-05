@@ -1,6 +1,6 @@
 {
   "name": "geojson-to-wfs-t-2",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "description": "A library to convert geojson features to WFS-T-2.0 xml strings.",
   "main": "dist/es6.common.js",
   "module": "src/index.js",
