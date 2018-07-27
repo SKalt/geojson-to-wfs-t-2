@@ -8,7 +8,7 @@ A library to create string Web Feature Service XML from geojson.  As a string fo
 ## Installation
 get the library by executing
 ```
-npm install geojson-to-wfst-2
+npm install geojson-to-wfs-t-2
 ```
 or
 
@@ -21,7 +21,7 @@ and `import/require`-ing es6 or transpiled es5 commonjs, UMD, or es modules from
 ## Usage
 
 ```{javascript}
-import wfs from 'geojson-to-wfst-2';
+import wfs from 'geojson-to-wfs-t-2';
 
 const nullIsland = {
   type: 'Feature',
