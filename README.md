@@ -57,7 +57,7 @@ wfs.Transaction(
 ```
 See [API.md](./API.md) for the full API documentation.
 
-####Further notes:
+#### Further notes:
 
 - While you should make sure to secure permissions to your data elsewhere (such as the [geoserver layer-level permissions](http://docs.geoserver.org/stable/en/user/security/layer.html)), you excluding or encapsulating dangerous actions like `Delete` is a good idea.
 
