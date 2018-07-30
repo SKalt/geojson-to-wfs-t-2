@@ -8,7 +8,7 @@ A library to create string Web Feature Service XML from geojson.  As a string fo
 ## Installation
 get the library by executing
 ```
-npm install geojson-to-wfst-2
+npm install geojson-to-wfs-t-2
 ```
 or
 
@@ -21,7 +21,7 @@ and `import/require`-ing es6 or transpiled es5 commonjs, UMD, or es modules from
 ## Usage
 
 ```{javascript}
-import wfs from 'geojson-to-wfst-2';
+import wfs from 'geojson-to-wfs-t-2';
 
 const nullIsland = {
   type: 'Feature',
@@ -57,7 +57,7 @@ wfs.Transaction(
 ```
 See [API.md](./API.md) for the full API documentation.
 
-####Further notes:
+#### Further notes:
 
 - While you should make sure to secure permissions to your data elsewhere (such as the [geoserver layer-level permissions](http://docs.geoserver.org/stable/en/user/security/layer.html)), you excluding or encapsulating dangerous actions like `Delete` is a good idea.
 
