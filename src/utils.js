@@ -135,7 +135,8 @@ export function translateFeatures(features, params={}) {
     let fields = '';
     if (geometry_name) {
       fields += xml.tag(
-        ns, geometry_name, {}, gml3(feature.geometry, '', {srsName, srsDimension})
+        ns, geometry_name, {},
+        gml3(feature.geometry, '', {srsName, srsDimension})
       );
     }
     useWhitelistIfAvailable(
