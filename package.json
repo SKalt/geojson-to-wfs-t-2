@@ -10,8 +10,7 @@
     "build": "rollup -c",
     "pretest": "npm run build",
     "test": "cd validation; mocha --timeout 60000",
-    "preversion": "node make-docs.js && npm run build && git add -f dist/*",
-    "prepublish": "node make-docs.js && npm run build && git add -f dist/*"
+    "preversion": "node make-docs.js && npm run build && git add -f dist/*"
   },
   "keywords": [
     "xml",
