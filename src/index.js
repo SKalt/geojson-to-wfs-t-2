@@ -4,9 +4,14 @@
  * A library of functions to turn geojson into WFS transactions.
  * @module geojsonToWfst
  */
-import {geomToGml as gml3} from 'geojson-to-gml-3';
-import * as ensure from './ensure';
-import * as xml from './xml';
+import {geomToGml as gml3} from 'geojson-to-gml-3/src/index.js';
+import {
+  array as ensureArray,
+  // id as ensureId,
+  typeName as ensureTypeName
+} from './ensure.js';
+import {filter as ensureFilter} from './filter.js';
+import {tag as xmlTag, escape as xmlEscape} from './xml.js';
 import {
   generateNsAssignments, translateFeatures, useWhitelistIfAvailable, unpack,
   generateSchemaLines
@@ -23,14 +28,14 @@ const {wfs} = xml;
  * @return {string} a wfs:Insert string.
  */
 export function Insert(features, params={}) {
-  features = ensure.array(features);
+  features = ensureArray(features);
   let {inputFormat, srsName, handle} = params;
   if (!features.length) {
     console.warn('no features supplied');
     return '';
   }
   let toInsert = translateFeatures(features, params);
-  return xml.tag('wfs', 'Insert', {inputFormat, srsName, handle}, toInsert);
+  return xmlTag('wfs', 'Insert', {inputFormat, srsName, handle}, toInsert);
 }
 
 /**
@@ -43,7 +48,7 @@ export function Insert(features, params={}) {
  * @return {string} a string wfs:Upate action.
  */
 export function Update(features, params={}) {
-  features = ensure.array(features);
+  features = ensureArray(features);
   /**
    * makes a wfs:Property string containg a wfs:ValueReference, wfs:Value pair.
    * @private
@@ -73,8 +78,8 @@ export function Update(features, params={}) {
     let {/* handle, */inputFormat, filter, typeName, whitelist} = params;
     let {srsName, ns, layer, geometry_name} = unpack(
       features[0] || {}, params, 'srsName', 'ns', 'layer', 'geometry_name');
-    typeName = ensure.typeName(ns, layer, typeName);
-    filter = ensure.filter(filter, features, params);
+    typeName = ensureTypeName(ns, layer, typeName);
+    filter = ensureFilter(filter, features, params);
     if (!filter && !features.length) {
       console.warn('neither features nor filter supplied');
       return '';
@@ -82,11 +87,11 @@ export function Update(features, params={}) {
     let fields = '';
     useWhitelistIfAvailable( // TODO: action attr
       whitelist, params.properties, (k, v) =>
-        fields += makeKvp(k, xml.escape(v))
+        fields += makeKvp(k, xmlEscape(v))
     );
     if (geometry_name) {
       fields += makeKvp(
-        geometry_name, xml.tag(
+        geometry_name, xmlTag(
           ns, geometry_name, {}, gml3(params.geometry, '', {srsName})
         )
       );
@@ -112,15 +117,15 @@ export function Update(features, params={}) {
  * @param {string} [params.typeName] @see Params.typeName. This will be inferred
  * from feature/params layer and ns if this is left undefined.
  * @param {filter} [params.filter] @see Params.filter.  This will be inferred
- * from feature ids and layer(s) if left undefined (@see ensure.filter).
+ * from feature ids and layer(s) if left undefined (@see ensureFilter).
  * @return {string} a wfs:Delete string.
  */
 export function Delete(features, params={}) {
-  features = ensure.array(features);
+  features = ensureArray(features);
   let {filter, typeName} = params; // TODO: recur & encapsulate by typeName
   let {ns, layer} = unpack(features[0] || {}, params, 'layer', 'ns');
-  typeName = ensure.typeName(ns, layer, typeName);
-  filter = ensure.filter(filter, features, params);
+  typeName = ensureTypeName(ns, layer, typeName);
+  filter = ensureFilter(filter, features, params);
   return wfs('Delete', {typeName}, filter);
 }
 
@@ -139,7 +144,7 @@ export function Replace(features, params={}) {
     [features[0]].filter((f)=>f),
     params || {srsName}
   );
-  filter = ensure.filter(filter, features, params);
+  filter = ensureFilter(filter, features, params);
   return wfs('Replace', {inputFormat, srsName}, replacements + filter);
 }
 

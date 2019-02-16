@@ -1,4 +1,4 @@
-import * as ensure from './ensure';
+import {id as ensureId} from './ensure';
 /**
  * xml utilities.
  * @module xml
@@ -56,7 +56,7 @@ export const wfs = (tagName, attrsObj, inner) =>
  * @return {String} a filter-ecoding of the filter.
  */
 export const idFilter = (lyr, id) => {
-  return `<fes:ResourceId rid="${ensure.id(lyr, id)}"/>`;
+  return `<fes:ResourceId rid="${ensureId(lyr, id)}"/>`;
 };
 
 /**

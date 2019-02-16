@@ -1,23 +1,18 @@
 import babel from 'rollup-plugin-babel';
 import eslint from 'rollup-plugin-eslint';
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
+import resolve from 'rollup-plugin-node-resolve'
 import replace from 'rollup-plugin-replace';
 import uglify from 'rollup-plugin-uglify';
 const name = 'geojsonToWfst';
 const base = {
   input: 'src/index.js',
   plugins: [
-    resolve({
-      jsnext: true,
-      main: true,
-      browser: true
-    }),
-    commonjs(),
+    // commonjs(),
     eslint(),
     babel({
-      exclude: 'node_modules/**'
+      exclude: 'node_modules/!(geojson-to-gml-3)'
     }),
+    resolve(),
     replace({
       ENV: JSON.stringify(process.env.NODE_ENV || 'development')
     }),
@@ -26,14 +21,15 @@ const base = {
 };
 let plugins = [...base.plugins];
 plugins.splice(3, 1, babel({
-  exclude: 'node_modules/**',
+  exclude: 'node_modules/!(geojson-to-gml-3)',
   presets: [
-    ['env', {
-      targets: {
-        browser: ['last 2 versions', '> 2%']
-      },
-      modules: false
-    }]
+    [
+      '@babel/env',
+      {
+        useBuiltIns: 'entry',
+        modules: false
+      }
+    ]
   ]
 }));
 
@@ -49,7 +45,7 @@ export default [
   }),
   Object.assign({}, base, {
     plugins,
-    output: ['es', 'cjs', 'umd'].map(
+    output: ['cjs', 'umd'].map(
       (format) => ({
         format,
         name,

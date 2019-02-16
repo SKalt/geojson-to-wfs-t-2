@@ -1,5 +1,3 @@
-import {unpack} from './utils';
-import {idFilter} from './xml';
 /**
  * common checks, coersions, and informative errors/ warnings
  * @module ensure
@@ -14,7 +12,7 @@ import {idFilter} from './xml';
  * @return {Feature[]}
  */
 export const array = (...maybe)=> (maybe[0].features || [].concat(...maybe))
-  .filter((f) => f);
+  .filter(Boolean);
 /**
  * Ensures a layer.id format of an input id.
  * @function
@@ -41,26 +39,6 @@ export const typeName = (ns, layer, typeName) =>{
   return typeName || `${ns}:${layer}Type`;
 };
 
-/**
- * Builds a filter from feature ids if one is not already input.
- * @function
- * @param {?String} filter a possible string filter
- * @param {Array<Object>} features an array of geojson feature objects
- * @param {Object} params an object of backup / override parameters
- * @return {String} A filter, or the input filter if it was a string.
- */
-export function filter(filter, features, params) {
-  if (!filter) {
-    filter = '';
-    for (let feature of features) {
-      let layer = unpack(feature, params);
-      filter += idFilter(layer, feature.id);
-    }
-    return `<fes:Filter>${filter}</fes:Filter>`;
-  } else {
-    return filter;
-  }
-};
 
 // http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#286
 /**

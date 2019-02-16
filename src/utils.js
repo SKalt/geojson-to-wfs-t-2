@@ -1,7 +1,6 @@
-import {geomToGml as gml3} from 'geojson-to-gml-3';
-import 'core-js/fn/object/entries';
-import * as xml from './xml';
-import * as ensure from './ensure';
+import {geomToGml as gml3} from 'geojson-to-gml-3/src/index.js';
+import {tag as xmlTag, escape as xmlEscape} from './xml.js';
+import {id as ensureId} from './ensure.js';
 
 /* eslint-disable camelcase */
 /**
@@ -134,7 +133,7 @@ export function translateFeatures(features, params={}) {
     );
     let fields = '';
     if (geometry_name) {
-      fields += xml.tag(
+      fields += xmlTag(
         ns, geometry_name, {},
         gml3(feature.geometry, '', {srsName, srsDimension})
       );
@@ -145,10 +144,10 @@ export function translateFeatures(features, params={}) {
         if (val === null) {
           return fields;
         }
-        return fields += xml.tag(ns, prop, {}, xml.escape(properties[prop]));
+        return fields += xmlTag(ns, prop, {}, xmlEscape(properties[prop]));
       }
     );
-    inner += xml.tag(ns, layer, {'gml:id': ensure.id(layer, id)}, fields);
+    inner += xmlTag(ns, layer, {'gml:id': ensureId(layer, id)}, fields);
   }
   return inner;
 }

@@ -15,6 +15,14 @@
 </dd>
 </dl>
 
+## Functions
+
+<dl>
+<dt><a href="#filter">filter(filter, features, params)</a> ⇒ <code>String</code></dt>
+<dd><p>Builds a filter from feature ids if one is not already input.</p>
+</dd>
+</dl>
+
 ## Typedefs
 
 <dl>
@@ -47,7 +55,6 @@ common checks, coersions, and informative errors/ warnings
     * _static_
         * [.id(lyr, id)](#module_ensure.id) ⇒ <code>String</code>
         * [.typeName(ns, layer, typeName)](#module_ensure.typeName) ⇒ <code>String</code>
-        * [.filter(filter, features, params)](#module_ensure.filter) ⇒ <code>String</code>
     * _inner_
         * [~allowedActions(action)](#module_ensure..allowedActions) ⇒ <code>Boolean</code>
 
@@ -81,20 +88,6 @@ return a correctly-formatted typeName
 | ns | <code>String</code> | namespace |
 | layer | <code>String</code> | layer name |
 | typeName | <code>String</code> | typeName to check |
-
-<a name="module_ensure.filter"></a>
-
-### ensure.filter(filter, features, params) ⇒ <code>String</code>
-Builds a filter from feature ids if one is not already input.
-
-**Kind**: static method of [<code>ensure</code>](#module_ensure)  
-**Returns**: <code>String</code> - A filter, or the input filter if it was a string.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| filter | <code>String</code> | a possible string filter |
-| features | <code>Array.&lt;Object&gt;</code> | an array of geojson feature objects |
-| params | <code>Object</code> | an object of backup / override parameters |
 
 <a name="module_ensure..allowedActions"></a>
 
@@ -164,7 +157,7 @@ if none are supplied.
 | [params.ns] | <code>string</code> | @see Params.ns |
 | [params.layer] | <code>string</code> \| <code>Object</code> | @see Params.layer |
 | [params.typeName] | <code>string</code> | @see Params.typeName. This will be inferred from feature/params layer and ns if this is left undefined. |
-| [params.filter] | <code>filter</code> | @see Params.filter.  This will be inferred from feature ids and layer(s) if left undefined (@see ensure.filter). |
+| [params.filter] | [<code>filter</code>](#filter) | @see Params.filter.  This will be inferred from feature ids and layer(s) if left undefined (@see ensureFilter). |
 
 <a name="module_geojsonToWfst.Replace"></a>
 
@@ -363,6 +356,20 @@ Creates an xml-safe string from a given input string
 | Param | Type | Description |
 | --- | --- | --- |
 | input | <code>String</code> | String to escape |
+
+<a name="filter"></a>
+
+## filter(filter, features, params) ⇒ <code>String</code>
+Builds a filter from feature ids if one is not already input.
+
+**Kind**: global function  
+**Returns**: <code>String</code> - A filter, or the input filter if it was a string.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| filter | <code>String</code> | a possible string filter |
+| features | <code>Array.&lt;Object&gt;</code> | an array of geojson feature objects |
+| params | <code>Object</code> | an object of backup / override parameters |
 
 <a name="Params"></a>
 
