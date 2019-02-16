@@ -379,6 +379,15 @@
     }
   }
   /**
+   * Shorthand for creating a wfs xml tag.
+   * @param {String} tagName a valid wfs tag name.
+   * @param {Object} attrsObj @see xml.attrs.
+   * @param {String} inner @see xml.tag.
+   * @return {String} a wfs element.
+   */
+
+  const wfs = (tagName, attrsObj, inner) => tag('wfs', tagName, attrsObj, inner);
+  /**
    * Creates a fes:ResourceId filter from a layername and id
    * @function
    * @param {String} lyr layer name of the filtered feature
@@ -611,9 +620,6 @@
   }
 
   /* eslint-disable camelcase, new-cap */
-  const {
-    wfs: wfs$1
-  } = xml;
   /**
    * Returns a wfs:Insert tag wrapping a translated feature
    * @function
@@ -675,14 +681,14 @@
       let value = '';
 
       if (val === null) {
-        value = wfs$1('Value', {
+        value = wfs('Value', {
           'xsi:nil': true
         }, '');
       } else if (val !== undefined) {
-        value = wfs$1('Value', {}, val);
+        value = wfs('Value', {}, val);
       }
 
-      return wfs$1('Property', {}, wfs$1('ValueReference', {
+      return wfs('Property', {}, wfs('ValueReference', {
         action: action$$1
       }, prop) + value);
     };
@@ -719,7 +725,7 @@
         })));
       }
 
-      return wfs$1('Update', {
+      return wfs('Update', {
         inputFormat,
         srsName,
         typeName: typeName$$1
@@ -758,7 +764,7 @@
     } = unpack(features[0] || {}, params, 'layer', 'ns');
     typeName$$1 = typeName(ns, layer, typeName$$1);
     filter$$1 = filter(filter$$1, features, params);
-    return wfs$1('Delete', {
+    return wfs('Delete', {
       typeName: typeName$$1
     }, filter$$1);
   }
@@ -770,7 +776,7 @@
    */
 
   function Replace(features, params = {}) {
-    features = ensure.array(features);
+    features = array(features);
     let {
       filter: filter$$1,
       inputFormat,
@@ -780,7 +786,7 @@
       srsName
     });
     filter$$1 = filter(filter$$1, features, params);
-    return wfs$1('Replace', {
+    return wfs('Replace', {
       inputFormat,
       srsName
     }, replacements + filter$$1);
@@ -834,7 +840,7 @@
         attrs[param] = params[param];
       }
     });
-    return wfs$1('Transaction', attrs, finalActions);
+    return wfs('Transaction', attrs, finalActions);
   }
 
   exports.Insert = Insert;

@@ -1,6 +1,6 @@
 import babel from 'rollup-plugin-babel';
 import eslint from 'rollup-plugin-eslint';
-import resolve from 'rollup-plugin-node-resolve'
+import resolve from 'rollup-plugin-node-resolve';
 import replace from 'rollup-plugin-replace';
 import uglify from 'rollup-plugin-uglify';
 const name = 'geojsonToWfst';

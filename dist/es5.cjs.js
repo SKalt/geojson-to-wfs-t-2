@@ -492,6 +492,17 @@ function tag(ns, tagName, attrsObj, inner) {
   }
 }
 /**
+ * Shorthand for creating a wfs xml tag.
+ * @param {String} tagName a valid wfs tag name.
+ * @param {Object} attrsObj @see xml.attrs.
+ * @param {String} inner @see xml.tag.
+ * @return {String} a wfs element.
+ */
+
+var wfs = function wfs(tagName, attrsObj, inner) {
+  return tag('wfs', tagName, attrsObj, inner);
+};
+/**
  * Creates a fes:ResourceId filter from a layername and id
  * @function
  * @param {String} lyr layer name of the filtered feature
@@ -817,8 +828,6 @@ function filter(filter, features, params) {
 }
 
 /* eslint-disable camelcase, new-cap */
-var _xml = xml,
-    wfs$1 = _xml.wfs;
 /**
  * Returns a wfs:Insert tag wrapping a translated feature
  * @function
@@ -880,14 +889,14 @@ function Update(features) {
     var value = '';
 
     if (val === null) {
-      value = wfs$1('Value', {
+      value = wfs('Value', {
         'xsi:nil': true
       }, '');
     } else if (val !== undefined) {
-      value = wfs$1('Value', {}, val);
+      value = wfs('Value', {}, val);
     }
 
-    return wfs$1('Property', {}, wfs$1('ValueReference', {
+    return wfs('Property', {}, wfs('ValueReference', {
       action: action$$1
     }, prop) + value);
   };
@@ -924,7 +933,7 @@ function Update(features) {
       })));
     }
 
-    return wfs$1('Update', {
+    return wfs('Update', {
       inputFormat: inputFormat,
       srsName: srsName,
       typeName: typeName$$1
@@ -964,7 +973,7 @@ function Delete(features) {
 
   typeName$$1 = typeName(ns, layer, typeName$$1);
   filter$$1 = filter(filter$$1, features, params);
-  return wfs$1('Delete', {
+  return wfs('Delete', {
     typeName: typeName$$1
   }, filter$$1);
 }
@@ -977,7 +986,7 @@ function Delete(features) {
 
 function Replace(features) {
   var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  features = ensure.array(features);
+  features = array(features);
 
   var _unpack3 = unpack(features[0] || {}, params || {}, 'filter', 'inputFormat', 'srsName'),
       filter$$1 = _unpack3.filter,
@@ -990,7 +999,7 @@ function Replace(features) {
     srsName: srsName
   });
   filter$$1 = filter(filter$$1, features, params);
-  return wfs$1('Replace', {
+  return wfs('Replace', {
     inputFormat: inputFormat,
     srsName: srsName
   }, replacements + filter$$1);
@@ -1046,7 +1055,7 @@ function Transaction(actions) {
       attrs[param] = params[param];
     }
   });
-  return wfs$1('Transaction', attrs, finalActions);
+  return wfs('Transaction', attrs, finalActions);
 }
 
 exports.Insert = Insert;

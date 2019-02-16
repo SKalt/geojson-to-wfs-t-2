@@ -11,12 +11,11 @@ import {
   typeName as ensureTypeName
 } from './ensure.js';
 import {filter as ensureFilter} from './filter.js';
-import {tag as xmlTag, escape as xmlEscape} from './xml.js';
+import {tag as xmlTag, escape as xmlEscape, wfs} from './xml.js';
 import {
   generateNsAssignments, translateFeatures, useWhitelistIfAvailable, unpack,
   generateSchemaLines
 } from './utils.js';
-const {wfs} = xml;
 
 /**
  * Returns a wfs:Insert tag wrapping a translated feature
@@ -136,7 +135,7 @@ export function Delete(features, params={}) {
  * @return {string} a string wfs:Replace action.
  */
 export function Replace(features, params={}) {
-  features = ensure.array(features);
+  features = ensureArray(features);
   let {filter, inputFormat, srsName} = unpack(
     features[0] || {}, params || {}, 'filter', 'inputFormat', 'srsName'
   );
