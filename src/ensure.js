@@ -36,7 +36,7 @@ export const typeName = (ns, layer, typeName) =>{
       JSON.stringify({typeName, ns, layer}, null, 2)
     }`);
   }
-  return typeName || `${ns}:${layer}Type`;
+  return typeName || `${layer}`;
 };
 
 

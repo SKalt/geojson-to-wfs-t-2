@@ -447,7 +447,7 @@ var typeName = function typeName(ns, layer, _typeName) {
     }, null, 2)));
   }
 
-  return _typeName || "".concat(ns, ":").concat(layer, "Type");
+  return _typeName || "".concat(layer);
 }; // http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#286
 
 /**
