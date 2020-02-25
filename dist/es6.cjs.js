@@ -334,7 +334,7 @@ const typeName = (ns, layer, typeName) => {
     }, null, 2)}`);
   }
 
-  return typeName || `${ns}:${layer}Type`;
+  return typeName || `${layer}`;
 }; // http://docs.opengeospatial.org/is/09-025r2/09-025r2.html#286
 
 /**
