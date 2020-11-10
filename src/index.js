@@ -140,7 +140,7 @@ export function Replace(features, params={}) {
     features[0] || {}, params || {}, 'filter', 'inputFormat', 'srsName'
   );
   let replacements = translateFeatures(
-    [features[0]].filter((f)=>f),
+    features,
     params || {srsName}
   );
   filter = ensureFilter(filter, features, params);
