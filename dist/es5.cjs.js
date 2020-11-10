@@ -993,9 +993,7 @@ function Replace(features) {
       inputFormat = _unpack3.inputFormat,
       srsName = _unpack3.srsName;
 
-  var replacements = translateFeatures([features[0]].filter(function (f) {
-    return f;
-  }), params || {
+  var replacements = translateFeatures(features, params || {
     srsName: srsName
   });
   filter$$1 = filter(filter$$1, features, params);

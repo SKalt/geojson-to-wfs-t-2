@@ -782,7 +782,7 @@
       inputFormat,
       srsName
     } = unpack(features[0] || {}, params || {}, 'filter', 'inputFormat', 'srsName');
-    let replacements = translateFeatures([features[0]].filter(f => f), params || {
+    let replacements = translateFeatures(features, params || {
       srsName
     });
     filter$$1 = filter(filter$$1, features, params);
